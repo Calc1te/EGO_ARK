@@ -1,10 +1,11 @@
 extends Node2D
 class_name Note
+
 enum NoteType{
-	Tap,
-	Slide,
-	Flick,
-	Hold
+	Tap, #0
+	Slide, #1
+	Flick, #2
+	Hold #3
 }
 @export var speed : float = 1;
 @export var thisNoteType : NoteType

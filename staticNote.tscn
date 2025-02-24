@@ -1,11 +1,10 @@
 [gd_scene load_steps=3 format=3 uid="uid://1qob67o7hcvv"]
 
 [ext_resource type="Script" path="res://static_note.gd" id="1_k5fuw"]
-[ext_resource type="Texture2D" uid="uid://dt5qjns65lq16" path="res://reddot.png" id="2_b67ds"]
+[ext_resource type="Texture2D" uid="uid://b171jr3lsvuy4" path="res://temp_assets/slide.png" id="2_hwo5u"]
 
 [node name="StaticNote" type="Node2D"]
 script = ExtResource("1_k5fuw")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("2_b67ds")
+texture = ExtResource("2_hwo5u")

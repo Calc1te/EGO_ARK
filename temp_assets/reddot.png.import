@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cbc6n6m00dg1b"
-path="res://.godot/imported/画板 1.png-63939c8a3dc0d487b1ab58455f4e6c00.ctex"
+uid="uid://dt5qjns65lq16"
+path="res://.godot/imported/reddot.png-1c3d3055c789e745f4c767e5ff0a1a6f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://画板 1.png"
-dest_files=["res://.godot/imported/画板 1.png-63939c8a3dc0d487b1ab58455f4e6c00.ctex"]
+source_file="res://temp_assets/reddot.png"
+dest_files=["res://.godot/imported/reddot.png-1c3d3055c789e745f4c767e5ff0a1a6f.ctex"]
 
 [params]
 
