@@ -1,0 +1,18 @@
+[gd_scene load_steps=5 format=3 uid="uid://dg1ns8vsrbs2o"]
+
+[ext_resource type="Script" path="res://game_scene.gd" id="1_h0sqa"]
+[ext_resource type="Script" path="res://static_rail_center.gd" id="1_u818j"]
+[ext_resource type="Texture2D" uid="uid://cbc6n6m00dg1b" path="res://画板 1.png" id="2_ljnjs"]
+[ext_resource type="PackedScene" uid="uid://1qob67o7hcvv" path="res://staticNote.tscn" id="4_dej4e"]
+
+[node name="gameScene" type="Node2D"]
+script = ExtResource("1_h0sqa")
+
+[node name="staticRailCenter" type="Node2D" parent="."]
+position = Vector2(576, 600)
+script = ExtResource("1_u818j")
+noteScene = ExtResource("4_dej4e")
+
+[node name="Sprite2D" type="Sprite2D" parent="staticRailCenter"]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_ljnjs")
