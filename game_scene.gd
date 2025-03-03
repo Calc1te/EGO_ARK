@@ -1,13 +1,17 @@
 extends Node2D
-
+class_name gameScene
 @onready var note_spawner : noteRoot = $staticRailCenter
 @export var isTestNoteSpawn : int = 1
+@export var globalSpeed : float = 10
+@onready var noteID : int = 0;
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	var note = note_spawner.spawnNodeWithoutAdding()
-	print(note)
-	note = note as Note
-	(func(): add_child(note)).call_deferred()
+	if isTestNoteSpawn:
+		var note = note_spawner.spawnNodeWithoutAdding()
+		print(note)
+		note = note as Note
+		(func(): add_child(note)).call_deferred()
+		return
 	
 
 
@@ -18,7 +22,6 @@ func _process(delta: float) -> void:
 	pass
 
 func spawnNote():
-	var noteTap = note_spawner.spawnNode(Note.NoteType.Tap)
-	var noteSlide = note_spawner.spawnNode(Note.NoteType.Slide)
-	var noteHold = note_spawner.spawnNode(Note.NoteType.Hold)
+	var noteTap = note_spawner.spawnNode(Note.NoteType.HoldStart, globalSpeed, noteID)
+	noteID+=1
 	
