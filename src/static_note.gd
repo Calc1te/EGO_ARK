@@ -10,7 +10,7 @@ enum NoteType{
 }
 var speed : float
 var noteID : int
-var inTime : int
+var inTime : int # the time this note is supposed to be hit
 signal judgementEnabled(node : Node2D)
 @export var thisNoteType : NoteType = NoteType.HoldStart
 @onready var spriteNode = $Sprite2D
@@ -18,6 +18,7 @@ var tap = load("res://temp_assets/tap.png") as Texture2D
 var hold = load("res://temp_assets/hold Background Removed.png") as Texture2D
 var flick = load("res://temp_assets/lineRailRoot Background Removed.png") as Texture2D
 var holdHead = load("res://temp_assets/hold Background Removed.png") as Texture2D
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	$Area2D.connect("area_entered", _on_area_entered)
@@ -45,7 +46,6 @@ func _on_area_entered(area : Area2D):
 	if area.name == "JudgeArea2D":
 		print("area check")
 		emit_signal("judgementEnabled",self)
-		inTime = Time.get_ticks_msec()
 	pass
 func checkInput() -> void:
 	if Input.is_action_just_pressed("hit_center_track"):
