@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://dg1ns8vsrbs2o"]
 
-[ext_resource type="Script" path="res://game_scene.gd" id="1_h0sqa"]
-[ext_resource type="Script" path="res://static_rail_center.gd" id="1_u818j"]
+[ext_resource type="Script" path="res://src/game_scene.gd" id="1_h0sqa"]
+[ext_resource type="Script" path="res://src/static_rail_center.gd" id="1_u818j"]
 [ext_resource type="Texture2D" uid="uid://xyhc6fbamoaf" path="res://temp_assets/lineRailRoot Background Removed.png" id="4_8mkbk"]
 [ext_resource type="PackedScene" uid="uid://1qob67o7hcvv" path="res://staticNote.tscn" id="4_dej4e"]
 

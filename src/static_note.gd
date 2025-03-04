@@ -10,6 +10,7 @@ enum NoteType{
 }
 var speed : float
 var noteID : int
+var inTime : int
 signal judgementEnabled(node : Node2D)
 @export var thisNoteType : NoteType = NoteType.HoldStart
 @onready var spriteNode = $Sprite2D
@@ -38,9 +39,17 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	position.y+=speed
+	checkInput()
 	pass
 func _on_area_entered(area : Area2D):
 	if area.name == "JudgeArea2D":
 		print("area check")
 		emit_signal("judgementEnabled",self)
+		inTime = Time.get_ticks_msec()
 	pass
+func checkInput() -> void:
+	if Input.is_action_just_pressed("hit_center_track"):
+		var hitTime = Time.get_ticks_msec()
+		print(hitTime - inTime)
+		queue_free()
+		#return hitTime - inTime
