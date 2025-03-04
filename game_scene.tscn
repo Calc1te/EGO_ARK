@@ -13,7 +13,7 @@ script = ExtResource("1_h0sqa")
 isTestNoteSpawn = 0
 
 [node name="staticRailCenter" type="Node2D" parent="."]
-position = Vector2(576, 600)
+position = Vector2(576, 550)
 script = ExtResource("1_u818j")
 noteScene = ExtResource("4_dej4e")
 

@@ -8,48 +8,58 @@ enum NoteType{
 	HoldStart, #3
 	HoldEnd #4
 }
+const TEXTURE_TAP := "res://temp_assets/tap.png"
+const TEXTURE_HOLD := "res://temp_assets/hold Background Removed.png"
+const TEXTURE_FLICK := "res://temp_assets/lineRailRoot Background Removed.png"
+const TEXTURE_HOLD_HEAD := "res://temp_assets/hold Background Removed.png"
+
 var speed : float
 var noteID : int
 var inTime : int # the time this note is supposed to be hit
+var inJudgement : bool # if the note entered the Judgement area
+var isActivate : bool # if the note is the "nearest to judgement line"
 signal judgementEnabled(node : Node2D)
 @export var thisNoteType : NoteType = NoteType.HoldStart
+
 @onready var spriteNode = $Sprite2D
-var tap = load("res://temp_assets/tap.png") as Texture2D
-var hold = load("res://temp_assets/hold Background Removed.png") as Texture2D
-var flick = load("res://temp_assets/lineRailRoot Background Removed.png") as Texture2D
-var holdHead = load("res://temp_assets/hold Background Removed.png") as Texture2D
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	$Area2D.connect("area_entered", _on_area_entered)
 	match thisNoteType:
 		NoteType.Tap:
-			spriteNode.texture = tap
+			spriteNode.texture = load(TEXTURE_TAP)
 		NoteType.Slide: 
-			spriteNode.texture = hold
+			spriteNode.texture = load(TEXTURE_HOLD)
 		NoteType.Flick:
-			spriteNode.texture = flick
+			spriteNode.texture = load(TEXTURE_FLICK)
 		NoteType.HoldStart:
-			spriteNode.texture = holdHead
+			spriteNode.texture = load(TEXTURE_HOLD_HEAD)
 		NoteType.HoldEnd:
 			pass
-	print(noteID)
 	pass # Replace with function body.
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	position.y+=speed
-	checkInput()
-	pass
+	_check_elimination()
+	_check_input()
+	
 func _on_area_entered(area : Area2D):
 	if area.name == "JudgeArea2D":
-		print("area check")
 		emit_signal("judgementEnabled",self)
-	pass
-func checkInput() -> void:
-	if Input.is_action_just_pressed("hit_center_track"):
+	
+func _check_input() -> void:
+	if Input.is_action_just_pressed("hit_center_track")&&isActivate&&inJudgement:
 		var hitTime = Time.get_ticks_msec()
-		print(hitTime - inTime)
+		print("Hit time difference: ", hitTime - inTime)
 		queue_free()
 		#return hitTime - inTime
+		
+func _check_elimination():
+	if position.y > 575:
+		spriteNode.modulate.a = 1.0 - (700-position.y)/125
+	if position.y>=700:
+		queue_free()
