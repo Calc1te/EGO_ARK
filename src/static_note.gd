@@ -18,7 +18,10 @@ var noteID : int
 var inTime : int # the time this note is supposed to be hit
 var inJudgement : bool # if the note entered the Judgement area
 var isActivate : bool # if the note is the "nearest to judgement line"
+
+
 signal judgementEnabled(node : Node2D)
+signal noteDestroyed(noteID : int, acc : int)
 @export var thisNoteType : NoteType = NoteType.HoldStart
 
 @onready var spriteNode = $Sprite2D
@@ -41,9 +44,12 @@ func _ready() -> void:
 	pass # Replace with function body.
 
 
+func _process(delta: float) -> void:
+	position.y+=speed*delta
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
-	position.y+=speed
+
 	_check_elimination()
 	_check_input()
 	
@@ -55,6 +61,7 @@ func _check_input() -> void:
 	if Input.is_action_just_pressed("hit_center_track")&&isActivate&&inJudgement:
 		var hitTime = Time.get_ticks_msec()
 		print("Hit time difference: ", hitTime - inTime)
+		emit_signal("noteDestroyed")
 		queue_free()
 		#return hitTime - inTime
 		
@@ -62,4 +69,5 @@ func _check_elimination():
 	if position.y > 575:
 		spriteNode.modulate.a = 1.0 - (700-position.y)/125
 	if position.y>=700:
+		emit_signal("noteDestroyed")
 		queue_free()
