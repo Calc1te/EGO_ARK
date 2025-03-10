@@ -8,6 +8,7 @@ enum NoteType{
 	HoldStart, #3
 	HoldEnd #4
 }
+
 const TEXTURE_TAP := "res://temp_assets/tap.png"
 const TEXTURE_HOLD := "res://temp_assets/hold Background Removed.png"
 const TEXTURE_FLICK := "res://temp_assets/lineRailRoot Background Removed.png"
@@ -19,9 +20,8 @@ var inTime : int # the time this note is supposed to be hit
 var inJudgement : bool # if the note entered the Judgement area
 var isActivate : bool # if the note is the "nearest to judgement line"
 
-
 signal judgementEnabled(node : Node2D)
-signal noteDestroyed(noteID : int, acc : int)
+signal noteDestroyed(hitoffset : int)
 @export var thisNoteType : NoteType = NoteType.HoldStart
 
 @onready var spriteNode = $Sprite2D
@@ -60,8 +60,8 @@ func _on_area_entered(area : Area2D):
 func _check_input() -> void:
 	if Input.is_action_just_pressed("hit_center_track")&&isActivate&&inJudgement:
 		var hitTime = Time.get_ticks_msec()
-		print("Hit time difference: ", hitTime - inTime)
-		emit_signal("noteDestroyed")
+		var offset = hitTime - inTime
+		emit_signal("noteDestroyed", offset)
 		queue_free()
 		#return hitTime - inTime
 		
@@ -69,5 +69,5 @@ func _check_elimination():
 	if position.y > 575:
 		spriteNode.modulate.a = 1.0 - (700-position.y)/125
 	if position.y>=700:
-		emit_signal("noteDestroyed")
+		emit_signal("noteDestroyed", 65535)
 		queue_free()
