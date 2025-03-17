@@ -9,7 +9,7 @@ func _ready() -> void:
 	pass # Replace with function body.
 
 
-func spawnNode(note_type : Note.NoteType, speed : float, noteID : int, inTime : int):
+func spawnNote(note_type : Note.NoteType, speed : float, noteID : int, inTime : int):
 	print("spawner called")
 	speed = SPEED_COEFFICIENT*speed
 	if noteScene==null:

@@ -21,7 +21,7 @@ var inJudgement : bool # if the note entered the Judgement area
 var isActivate : bool # if the note is the "nearest to judgement line"
 
 signal judgementEnabled(node : Node2D)
-signal noteDestroyed(hitoffset : int)
+signal noteDestroyed(hitoffset : int, posY : int)
 @export var thisNoteType : NoteType = NoteType.HoldStart
 
 @onready var spriteNode = $Sprite2D
@@ -48,7 +48,7 @@ func _process(delta: float) -> void:
 	position.y+=speed*delta
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 
 	_check_elimination()
 	_check_input()
@@ -57,17 +57,25 @@ func _on_area_entered(area : Area2D):
 	if area.name == "JudgeArea2D":
 		emit_signal("judgementEnabled",self)
 	
+
 func _check_input() -> void:
-	if Input.is_action_just_pressed("hit_center_track")&&isActivate&&inJudgement:
-		var hitTime = Time.get_ticks_msec()
-		var offset = hitTime - inTime
-		emit_signal("noteDestroyed", offset)
-		queue_free()
+	if thisNoteType == NoteType.Tap:
+		if Input.is_action_just_pressed("hit_center_track")&&isActivate&&inJudgement:
+			var hitTime = Time.get_ticks_msec()
+			var offset = hitTime - inTime
+			emit_signal("noteDestroyed", offset, position.y)
+			queue_free()
+			return
+	if thisNoteType == NoteType.HoldStart:
+		if Input.is_action_pressed("hit_center_track")&&isActivate&&inJudgement:
+			var hitTime = Time.get_ticks_msec()
+			
+	
 		#return hitTime - inTime
 		
 func _check_elimination():
 	if position.y > 575:
 		spriteNode.modulate.a = 1.0 - (700-position.y)/125
 	if position.y>=700:
-		emit_signal("noteDestroyed", 65535)
+		emit_signal("noteDestroyed", 65535, 65535)
 		queue_free()

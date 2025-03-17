@@ -1,9 +1,73 @@
-[gd_scene format=3 uid="uid://dtcrpevhud7lo"]
+[gd_scene load_steps=3 format=3 uid="uid://dysyc6s3efjpg"]
+
+[ext_resource type="Script" path="res://src/options.gd" id="1_28igj"]
+[ext_resource type="PackedScene" uid="uid://dg1ns8vsrbs2o" path="res://scenes/game_scene.tscn" id="2_50aaf"]
 
 [node name="Options" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = -490.0
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(1.74896, 1)
+script = ExtResource("1_28igj")
+
+[node name="Offset" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 348.779
+offset_top = 392.0
+offset_right = -296.221
+offset_bottom = -233.0
+theme_override_font_sizes/font_size = 30
+
+[node name="Speed" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 341.917
+offset_top = 192.0
+offset_right = -304.083
+offset_bottom = -433.0
+theme_override_font_sizes/font_size = 30
+
+[node name="OffsetAdjust" type="HSlider" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 41.0
+offset_top = 360.0
+offset_right = -185.0
+offset_bottom = -220.0
+scale = Vector2(0.59, 1)
+min_value = -500.0
+max_value = 500.0
+
+[node name="SpeedAdjust" type="HSlider" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 43.4544
+offset_top = 198.0
+offset_right = -348.546
+offset_bottom = -434.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1, 1.33335)
+min_value = 1.0
+max_value = 20.0
+value = 1.0
+
+[node name="gameScene" parent="." instance=ExtResource("2_50aaf")]
+position = Vector2(125.217, -13)
+scale = Vector2(0.646, 1)
+
+[connection signal="value_changed" from="OffsetAdjust" to="." method="_on_offset_adjust_value_changed"]
+[connection signal="value_changed" from="SpeedAdjust" to="." method="_on_speed_adjust_value_changed"]

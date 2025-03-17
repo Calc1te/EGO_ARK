@@ -1,47 +1,44 @@
-[gd_scene load_steps=4 format=3 uid="uid://bancr8py874mi"]
+[gd_scene load_steps=2 format=3 uid="uid://bu4osmvn8xv7b"]
 
 [ext_resource type="Script" path="res://src/ui.gd" id="1_bkkkm"]
-[ext_resource type="PackedScene" uid="uid://dg1ns8vsrbs2o" path="res://scenes/game_scene.tscn" id="2_p2oje"]
-
-[sub_resource type="Theme" id="Theme_sg56e"]
 
 [node name="Ui" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -1152.0
-offset_bottom = -648.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_bkkkm")
-game_scene = ExtResource("2_p2oje")
 
 [node name="Start" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 247.0
+offset_top = 258.0
+offset_right = -249.0
+offset_bottom = -226.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Option" type="Button" parent="."]
 layout_mode = 0
-offset_left = 320.0
-offset_top = 275.0
-offset_right = 832.0
-offset_bottom = 374.0
-text = "Start"
+offset_right = 8.0
+offset_bottom = 8.0
 
 [node name="Label" type="Label" parent="."]
-layout_mode = 0
-offset_left = 477.0
-offset_top = 168.0
-offset_right = 658.0
-offset_bottom = 223.0
-theme = SubResource("Theme_sg56e")
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 470.0
+offset_top = 133.0
+offset_right = -498.0
+offset_bottom = -460.0
 theme_override_font_sizes/font_size = 40
 text = "EGO_ARK"
 
-[node name="Options" type="Button" parent="."]
-layout_mode = 0
-offset_left = 320.0
-offset_top = 432.0
-offset_right = 832.0
-offset_bottom = 538.0
-text = "Options"
-
 [connection signal="pressed" from="Start" to="." method="_on_start_pressed"]
-[connection signal="pressed" from="Options" to="." method="_on_options_pressed"]
+[connection signal="pressed" from="Option" to="." method="_on_options_pressed"]
