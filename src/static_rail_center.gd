@@ -4,12 +4,16 @@ class_name noteRoot
 var spawnheight : int
 @export var noteScene : PackedScene
 const SPEED_COEFFICIENT : int = 200
+const TAP := 0
+const SLIDE := 1
+const FLICK := 2
+const HOLD := 3
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass # Replace with function body.
 
 
-func spawnNote(note_type : Note.NoteType, speed : float, noteID : int, inTime : int):
+func spawnNote(note_type : Note.NoteType, speed : float, noteID : int, inTime : int, holdDuration : int = -1):
 	print("spawner called")
 	speed = SPEED_COEFFICIENT*speed
 	if noteScene==null:
@@ -28,6 +32,13 @@ func spawnNote(note_type : Note.NoteType, speed : float, noteID : int, inTime : 
 	instance.speed = speed
 	instance.noteID = noteID
 	instance.inTime = Time.get_ticks_msec()
+	match note_type:
+		0,1: #Tap/Slide
+			pass
+		2:
+			pass #TODO: flick direction
+		3: #Hold
+			instance.holdDuration = holdDuration
 	add_child(instance)
 	instance.connect("judgementEnabled", _on_judge_enabled)
 	return instance

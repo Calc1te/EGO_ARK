@@ -61,7 +61,7 @@ func _physics_process(_delta: float) -> void:
 	
 
 func spawnNote():
-	var note = note_spawner.spawnNote(Note.NoteType.HoldStart, globalSpeed, noteID, inFrame)
+	var note = note_spawner.spawnNote(Note.NoteType.Tap, globalSpeed, noteID, inFrame)
 	note.connect("noteDestroyed",_on_note_destroyed)
 	noteArray.append(note)
 	#print(noteArray)
@@ -72,9 +72,12 @@ func setNoteEnable():
 	if noteArray.size()>0:
 			noteArray[0].isActivate = true
 
-func _on_note_destroyed(acc, posY):
+func _on_note_destroyed(noteType, acc, posY, holdDuration):
+	print(noteType)
 	#print("note destroyed: ",acc)
-	noteArray.remove_at(0) 
+	noteArray.remove_at(0)
+	if holdDuration == -1: # not hold note
+		pass
 	calculate_acc(acc)
 	if isDemoPlay:
 		drawDemoHit(posY)
