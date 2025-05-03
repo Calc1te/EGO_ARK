@@ -9,14 +9,14 @@ func _ready() -> void:
 	pass # Replace with function body.
 
 
-func spawnNote(note_type : Note.NoteType, speed : float, noteID : int, inTime : int):
+func spawnNote(note_type : Note.NoteType, speed : float, noteID : int, inTime : int, holdDuration : int):
 	print("spawner called")
 	speed = SPEED_COEFFICIENT*speed
 	if noteScene==null:
 		return
 	var instance = noteScene.instantiate()
 	if spawnheight < 0 or speed <= 0:
-		print("Error: Invalid spawnheight or speed.")
+		print("Error: Invalid spawn height or speed.")
 		return null
 	if instance == null:
 		print("Error: Failed to instantiate noteScene.")
@@ -27,7 +27,9 @@ func spawnNote(note_type : Note.NoteType, speed : float, noteID : int, inTime : 
 	instance.thisNoteType = note_type
 	instance.speed = speed
 	instance.noteID = noteID
-	instance.inTime = Time.get_ticks_msec()
+	instance.inTime = Time.get_ticks_msec() 
+	if note_type == Note.NoteType.HoldStart:
+		instance.durationTime = holdDuration
 	add_child(instance)
 	instance.connect("judgementEnabled", _on_judge_enabled)
 	return instance

@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://1qob67o7hcvv"]
 
-[ext_resource type="Script" path="res://src/static_note.gd" id="1_k5fuw"]
+[ext_resource type="Script" uid="uid://c7ijie7k3ke8o" path="res://src/static_note.gd" id="1_k5fuw"]
 [ext_resource type="Texture2D" uid="uid://dt7k11wg3scaj" path="res://temp_assets/hold Background Removed.png" id="2_i2ank"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_64ug5"]

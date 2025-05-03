@@ -61,7 +61,7 @@ func _physics_process(_delta: float) -> void:
 	
 
 func spawnNote():
-	var note = note_spawner.spawnNote(Note.NoteType.HoldStart, globalSpeed, noteID, inFrame)
+	var note = note_spawner.spawnNote(Note.NoteType.HoldStart, globalSpeed, noteID, inFrame, 10000)
 	note.connect("noteDestroyed",_on_note_destroyed)
 	noteArray.append(note)
 	#print(noteArray)
@@ -69,10 +69,11 @@ func spawnNote():
 	noteID+=1
 	
 func setNoteEnable():
+	noteArray = noteArray.filter(func(note): return is_instance_valid(note))
 	if noteArray.size()>0:
 			noteArray[0].isActivate = true
 
-func _on_note_destroyed(acc, posY):
+func _on_note_destroyed(acc, posY, holdDuration):
 	#print("note destroyed: ",acc)
 	noteArray.remove_at(0) 
 	calculate_acc(acc)

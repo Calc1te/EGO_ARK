@@ -1,10 +1,10 @@
 [gd_scene load_steps=7 format=3 uid="uid://dg1ns8vsrbs2o"]
 
-[ext_resource type="Script" path="res://src/game_scene.gd" id="1_h0sqa"]
-[ext_resource type="Script" path="res://src/static_rail_center.gd" id="1_u818j"]
+[ext_resource type="Script" uid="uid://cm1nytwgkjjw7" path="res://src/game_scene.gd" id="1_h0sqa"]
+[ext_resource type="Script" uid="uid://f4gy50otvith" path="res://src/static_rail_center.gd" id="1_u818j"]
 [ext_resource type="Texture2D" uid="uid://xyhc6fbamoaf" path="res://temp_assets/lineRailRoot Background Removed.png" id="4_8mkbk"]
 [ext_resource type="PackedScene" uid="uid://1qob67o7hcvv" path="res://scenes/staticNote.tscn" id="4_dej4e"]
-[ext_resource type="Script" path="res://sound.gd" id="5_fasfa"]
+[ext_resource type="Script" uid="uid://cw3dom26bc7r4" path="res://sound.gd" id="5_fasfa"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_xaj84"]
 distance = 149.0
