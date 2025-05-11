@@ -26,6 +26,10 @@ const SD_CRIT_PERFECT = 26
 const SD_PERFECT = 40
 const SD_GOOD = 60
 const SD_BAD = 125
+##### hold and flick factor #####
+const HOLD_SCALING = 0.5
+const FLICK_SCALING = 0.9
+
 
 ###### Customized Options loaded before game start #####
 @export var playerOffset : float = 0
@@ -61,7 +65,7 @@ func _physics_process(_delta: float) -> void:
 	
 
 func spawnNote():
-	var note = note_spawner.spawnNote(Note.NoteType.HoldStart, globalSpeed, noteID, inFrame, 10000)
+	var note = note_spawner.spawnNote(Note.NoteType.HoldStart, globalSpeed, noteID, inFrame, 100)
 	note.connect("noteDestroyed",_on_note_destroyed)
 	noteArray.append(note)
 	#print(noteArray)
@@ -76,7 +80,7 @@ func setNoteEnable():
 func _on_note_destroyed(acc, posY, holdDuration):
 	#print("note destroyed: ",acc)
 	noteArray.remove_at(0) 
-	calculate_acc(acc)
+	calculate_acc(acc, holdDuration)
 	if isDemoPlay:
 		drawDemoHit(posY)
 	
@@ -96,17 +100,31 @@ func drawDemoHit(pos: int):
 	# 绘制一条从左侧到右侧的直线，位置在 posY
 	draw_line(Vector2(0, pos), Vector2(viewport_width, pos), line_color, line_width)
 	
-func calculate_acc(acc : int):
+func calculate_acc(acc : int, holdError : int):
 	#acc是按照毫秒计算不是帧数计算
 	var hitError : int = abs(acc - referenceOffset + playerOffset)
-	if hitError > DT_BAD:
-		print("miss")
-	elif hitError < DT_BAD && hitError > DT_GOOD:
-		print("bad")
-	elif hitError < DT_GOOD && hitError > DT_PERFECT:
-		print("good")
-	elif hitError < DT_PERFECT && hitError > DT_CRIT_PERFECT:
-		print("perfect")
-	elif hitError < DT_CRIT_PERFECT:
-		print("crit perfect")
-	pass
+	if holdError == -1:
+		if hitError > DT_BAD:
+			print("miss")
+		elif hitError < DT_BAD && hitError > DT_GOOD:
+			print("bad")
+		elif hitError < DT_GOOD && hitError > DT_PERFECT:
+			print("good")
+		elif hitError < DT_PERFECT && hitError > DT_CRIT_PERFECT:
+			print("perfect")
+		elif hitError < DT_CRIT_PERFECT:
+			print("crit perfect")
+
+	else:
+		hitError = int(hitError+holdError*HOLD_SCALING)
+		print(hitError)
+		if hitError > DT_BAD:
+			print("miss")
+		elif hitError < DT_BAD && hitError > DT_GOOD:
+			print("bad")
+		elif hitError < DT_GOOD && hitError > DT_PERFECT:
+			print("good")
+		elif hitError < DT_PERFECT && hitError > DT_CRIT_PERFECT:
+			print("perfect")
+		elif hitError < DT_CRIT_PERFECT:
+			print("crit perfect")
