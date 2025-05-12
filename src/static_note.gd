@@ -10,34 +10,38 @@ const TEXTURE_TAP        := "res://temp_assets/tap.png"
 const TEXTURE_HOLD       := "res://temp_assets/hold Background Removed.png"
 const TEXTURE_FLICK      := "res://temp_assets/lineRailRoot Background Removed.png"
 const TEXTURE_HOLD_HEAD  := "res://temp_assets/hold Background Removed.png"
-const TEXTURE_HOLD_BODY  := ""
+const TEXTURE_HOLD_BODY  := "res://temp_assets/hold_BODY.png"
 
 # ────────────────────────── 状态量 ──────────────────────────
-var speed          : float
-var noteID         : int
-var durationTime   : int          # ms
-var inTime         : int          # 该音符应被击中的绝对时间
-var inJudgement    : bool = false # 是否进入判定区（由外部或信号同步）
-var isActivate     : bool = false # 是否是“最近的”可判定音符（由外部同步）
-var isHoldActive   : bool = false # Hold 当前是否处于按住状态
+var speed           : float
+var noteID          : int
+var durationTime    : int          # ms hold的理论持续时间
+var inTime          : int          # 该音符应被击中的绝对时间
+var inJudgement     : bool = false # 是否进入判定区
+var isActivate     	: bool = false # 是否是“最近的”可判定音符
+var isHoldActive   	: bool = false # Hold 当前是否处于按住状态
 
-var holdDuration   : int  = 0     # ★ 每实例独立
-var hitTime        : int  = -1    # ★ 开始按下的绝对时间
+var holdDuration   	: int  = 0     # 每实例独立
+var holdLength 		: int		   # 用于生成HoldBody长度
+var hitTime        	: int  = -1    # 开始按下的绝对时间
 
 # 用于实时计算 Hold 时长
-var _hold_start_time : int = -1   # ★ 私有，仅 HoldStart 使用
+var _hold_start_time : int = -1   # 仅 HoldStart 使用
 
 signal judgementEnabled(node : Node2D)
 signal noteDestroyed(hitOffset : int, posY : int, holdDuration : int)
 
 @export var thisNoteType : NoteType = NoteType.HoldStart
 @onready var spriteNode : Sprite2D = $Sprite2D
+@onready var holdBodyContainer : Node2D = $holdBodyContainer
 
 # ────────────────────────── 生命周期 ──────────────────────────
 func _ready() -> void:
 	$Area2D.connect("area_entered", _on_area_entered)
 	_setup_texture()
 	_reset_hold_state()
+	if thisNoteType == NoteType.HoldStart:
+		_draw_hold_bodies()
 
 func _physics_process(_delta: float) -> void:
 	_move_note(_delta)
@@ -52,7 +56,7 @@ func _setup_texture() -> void:
 		NoteType.Slide:      spriteNode.texture = load(TEXTURE_HOLD)
 		NoteType.Flick:      spriteNode.texture = load(TEXTURE_FLICK)
 		NoteType.HoldStart:  spriteNode.texture = load(TEXTURE_HOLD_HEAD)
-		NoteType.HoldBody:   spriteNode.texture = load(TEXTURE_HOLD_BODY)
+		
 
 func _reset_hold_state() -> void: 
 	isHoldActive     = false
@@ -70,7 +74,7 @@ func _on_area_entered(area : Area2D) -> void:
 		emit_signal("judgementEnabled", self)
 
 func _check_input() -> void:
-	if !is_inside_tree():        return
+	if !is_inside_tree(): return
 	if !isActivate || !inJudgement: return
 
 	match thisNoteType:
@@ -90,6 +94,15 @@ func _tap_hit() -> void:
 	queue_free()
 
 # ────────────────────────── Hold 专用 ──────────────────────────
+func _draw_hold_bodies() -> void:
+	var yOffset = 0
+	for i in range(durationTime):
+		var holdBodyClone = Sprite2D.new()
+		holdBodyClone.texture = load(TEXTURE_HOLD_BODY)
+		holdBodyClone.position = Vector2(0,yOffset)
+		holdBodyContainer.add_child(holdBodyClone)
+		yOffset -= 1
+
 func _start_hold() -> void:
 	isHoldActive     = true
 	_hold_start_time = Time.get_ticks_msec()
@@ -104,7 +117,7 @@ func _update_hold_duration() -> void:
 func _end_hold() -> void:
 	isHoldActive = false
 	var offset := hitTime - inTime  # 命中偏差仍用首击时刻计算
-	print('ref:',offset,',',abs(holdDuration-durationTime))
+	# print('ref:',offset,',',abs(holdDuration-durationTime))
 	emit_signal("noteDestroyed", offset, position.y, abs(holdDuration-durationTime))
 	queue_free()
 

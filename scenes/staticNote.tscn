@@ -19,3 +19,9 @@ texture = ExtResource("2_i2ank")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(-3, 6)
 shape = SubResource("CapsuleShape2D_64ug5")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="holdBodyContainer" type="Node2D" parent="."]
