@@ -22,7 +22,6 @@ func spawnNote(note_type : Note.NoteType, speed : float, noteID : int, inTime : 
 		print("Error: Failed to instantiate noteScene.")
 		return null
 	# 此处的position是相对（判定原点的）坐标系
-	#instance.position.x = position.x
 	instance.position.y = -spawnheight
 	instance.thisNoteType = note_type
 	instance.speed = speed

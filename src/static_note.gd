@@ -40,6 +40,7 @@ func _ready() -> void:
 	$Area2D.connect("area_entered", _on_area_entered)
 	_setup_texture()
 	_reset_hold_state()
+	spriteNode.z_index = 10
 	if thisNoteType == NoteType.HoldStart:
 		_draw_hold_bodies()
 
@@ -66,7 +67,9 @@ func _reset_hold_state() -> void:
 
 func _move_note(delta: float) -> void:
 	if !isHoldActive:
-		position.y += speed * delta   
+		position.y += speed * delta
+	if isHoldActive:
+		holdBodyContainer.position.y += speed*delta   
 
 func _on_area_entered(area : Area2D) -> void:
 	if area.name == "JudgeArea2D":
@@ -100,6 +103,7 @@ func _draw_hold_bodies() -> void:
 		var holdBodyClone = Sprite2D.new()
 		holdBodyClone.texture = load(TEXTURE_HOLD_BODY)
 		holdBodyClone.position = Vector2(0,yOffset)
+		holdBodyClone.z_index = 0
 		holdBodyContainer.add_child(holdBodyClone)
 		yOffset -= 1
 

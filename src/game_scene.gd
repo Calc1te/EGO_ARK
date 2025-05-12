@@ -12,7 +12,7 @@ class_name gameScene
 @export var isDemoPlay : bool
 @export var referenceOffset : float = 0
 
-###### Game-Related Constants DO NOT MODIFY ######
+###### Game-Related Constants ######
 const FRAME_RATE = 120
 const SPEED_COEFFICIENT = 200
 
@@ -42,7 +42,7 @@ var noteArray = Array()
 ######
 var frame : int
 # 计算noteSpawnFrame的误差可能导致打击帧数前后偏移一帧
-@onready var noteSpawnFrame : int = inFrame - (spawnHeight/(globalSpeed*SPEED_COEFFICIENT)*FRAME_RATE)
+@onready var noteSpawnFrame : int = int(inFrame - (spawnHeight/(globalSpeed*SPEED_COEFFICIENT)*FRAME_RATE))
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	print("current offset: ", referenceOffset)
@@ -54,7 +54,7 @@ func _ready() -> void:
 
 func _physics_process(_delta: float) -> void:
 	if Input.is_action_just_pressed("spawn_note"):
-		spawnNote()
+		spawnNote() # this is a test function
 	if frame == noteSpawnFrame && isTestNoteSpawn:
 		spawnNote() 
 	#print("size",noteArray.size(),"index",noteArray)
