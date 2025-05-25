@@ -16,7 +16,7 @@ const TEXTURE_HOLD_BODY  := "res://temp_assets/hold_BODY.png"
 var speed           : float
 var noteID          : int
 var durationTime    : int          # ms hold的理论持续时间
-var inTime          : int          # 该音符应被击中的绝对时间
+var inTime          : int          # 音符生成的时间，会在计算判定时被referenceOffset抵消
 var inJudgement     : bool = false # 是否进入判定区
 var isActivate     	: bool = false # 是否是“最近的”可判定音符
 var isHoldActive   	: bool = false # Hold 当前是否处于按住状态
@@ -34,6 +34,7 @@ signal noteDestroyed(hitOffset : int, posY : int, holdDuration : int)
 @export var thisNoteType : NoteType = NoteType.HoldStart
 @onready var spriteNode : Sprite2D = $Sprite2D
 @onready var holdBodyContainer : Node2D = $holdBodyContainer
+@export var isAutoPlay := false
 
 # ────────────────────────── 生命周期 ──────────────────────────
 func _ready() -> void:
@@ -76,6 +77,8 @@ func _on_area_entered(area : Area2D) -> void:
 		inJudgement = true
 		emit_signal("judgementEnabled", self)
 
+	
+
 func _check_input() -> void:
 	if !is_inside_tree(): return
 	if !isActivate || !inJudgement: return
@@ -89,6 +92,9 @@ func _check_input() -> void:
 				_start_hold()
 			elif isHoldActive and Input.is_action_just_released("hit_center_track"):
 				_end_hold()
+		NoteType.Slide:
+			if Input.is_action_just_pressed("hit_center_track")||Input.is_action_pressed("hit_center_track"):
+				_slide_hit()
 
 func _tap_hit() -> void:
 	hitTime = Time.get_ticks_msec()
@@ -96,7 +102,7 @@ func _tap_hit() -> void:
 	emit_signal("noteDestroyed", offset, position.y, NO_HOLD_DURATION)
 	queue_free()
 
-# ────────────────────────── Hold 专用 ──────────────────────────
+# ────────────────────────── Hold ─────────────────────────────────
 func _draw_hold_bodies() -> void:
 	var yOffset = 0
 	for i in range(durationTime):
@@ -113,9 +119,10 @@ func _start_hold() -> void:
 	hitTime          = _hold_start_time   # 记录首击时刻
 
 func _update_hold_duration() -> void:
+	var early_release := !isAutoPlay && !Input.is_action_pressed("hit_center_track")
 	if isHoldActive:
 		holdDuration = Time.get_ticks_msec() - _hold_start_time
-		if holdDuration >= (durationTime+50) or !Input.is_action_pressed("hit_center_track"):
+		if holdDuration >= (durationTime+50) or early_release:
 			_end_hold()
 
 func _end_hold() -> void:
@@ -124,6 +131,13 @@ func _end_hold() -> void:
 	# print('ref:',offset,',',abs(holdDuration-durationTime))
 	emit_signal("noteDestroyed", offset, position.y, abs(holdDuration-durationTime))
 	queue_free()
+
+
+# ────────────────────────── Slide ────────────────────────────────
+func _slide_hit() -> void:
+	emit_signal("noteDestroyed", 1000, position.y, NO_HOLD_DURATION)
+	queue_free()
+	 
 
 # ────────────────────────── Miss & Fade Out ──────────────────────────
 func _check_elimination() -> void:

@@ -42,7 +42,7 @@ var noteArray = Array()
 ######
 var frame : int
 # 计算noteSpawnFrame的误差可能导致打击帧数前后偏移一帧
-@onready var noteSpawnFrame : int = int(inFrame - (spawnHeight/(globalSpeed*SPEED_COEFFICIENT)*FRAME_RATE))
+# @onready var noteSpawnFrame : int = int(inFrame - (spawnHeight/(globalSpeed*SPEED_COEFFICIENT)*FRAME_RATE))
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	print("current offset: ", referenceOffset)
@@ -55,9 +55,6 @@ func _ready() -> void:
 func _physics_process(_delta: float) -> void:
 	if Input.is_action_just_pressed("spawn_note"):
 		spawnNote() # this is a test function
-	if frame == noteSpawnFrame && isTestNoteSpawn:
-		spawnNote() 
-	#print("size",noteArray.size(),"index",noteArray)
 	setNoteEnable()
 	frame+=1
 	#print(frame)
@@ -65,7 +62,7 @@ func _physics_process(_delta: float) -> void:
 	
 
 func spawnNote():
-	var note = note_spawner.spawnNote(Note.NoteType.HoldStart, globalSpeed, noteID, inFrame, 100)
+	var note = note_spawner.spawnNote(Note.NoteType.Slide, globalSpeed, noteID, Time.get_ticks_msec(), -1)
 	note.connect("noteDestroyed",_on_note_destroyed)
 	noteArray.append(note)
 	#print(noteArray)
@@ -101,8 +98,13 @@ func drawDemoHit(pos: int):
 	draw_line(Vector2(0, pos), Vector2(viewport_width, pos), line_color, line_width)
 	
 func calculate_acc(acc : int, holdError : int):
+	print(acc, ",", holdError)
 	#acc是按照毫秒计算不是帧数计算
+	if acc == 1000 && holdError == -1:
+		print("slide Perfect")
+		return
 	var hitError : int = abs(acc - referenceOffset + playerOffset)
+	print(acc - referenceOffset + playerOffset)
 	if holdError == -1:
 		if hitError > DT_BAD:
 			print("miss")
