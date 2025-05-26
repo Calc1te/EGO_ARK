@@ -111,6 +111,7 @@ func setNoteEnable():
 	if noteArray.size()>0:
 			noteArray[0].isActivate = true
 
+
 func _on_note_destroyed(acc, posY, holdDuration):
 	#print("note destroyed: ",acc)
 	noteArray.remove_at(0) 

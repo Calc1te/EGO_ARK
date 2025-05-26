@@ -5,12 +5,15 @@ enum NoteType { Tap, Slide, Flick, HoldStart, HoldBody }
 
 const NO_HOLD_DURATION := -1
 const MISS := 65535
+const ELIMINATION_START := 575
+const ELIMINATION_END := 700
 
 const TEXTURE_TAP        := "res://temp_assets/tap.png"
 const TEXTURE_HOLD       := "res://temp_assets/hold Background Removed.png"
 const TEXTURE_FLICK      := "res://temp_assets/lineRailRoot Background Removed.png"
 const TEXTURE_HOLD_HEAD  := "res://temp_assets/hold Background Removed.png"
 const TEXTURE_HOLD_BODY  := "res://temp_assets/hold_BODY.png"
+
 
 # ────────────────────────── 状态量 ──────────────────────────
 var speed           : float
@@ -80,6 +83,7 @@ func _on_area_entered(area : Area2D) -> void:
 	
 
 func _check_input() -> void:
+
 	if !is_inside_tree(): return
 	if !isActivate || !inJudgement: return
 
@@ -145,4 +149,5 @@ func _check_elimination() -> void:
 		spriteNode.modulate.a = 1.0 - (700.0 - position.y) / 125.0
 	if position.y >= 700.0:
 		emit_signal("noteDestroyed", MISS, MISS, MISS)
+
 		queue_free()
