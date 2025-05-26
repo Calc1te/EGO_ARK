@@ -4,6 +4,7 @@ class_name gameScene
 @onready var note_spawner : noteRoot = $staticRailCenter
 @onready var noteID : int = 0
 @onready var soundPlayer : AudioStreamPlayer = $AudioStreamPlayer
+@onready var chartLoader : ChartLoader = $ChartLoader
 
 @export var mainMenu : PackedScene
 @export var spawnHeight :int = 800
@@ -38,11 +39,11 @@ const FLICK_SCALING = 0.9
 var noteArray = Array()
 
 ###### test variable
-@export var inFrame : int = 360
+
 ######
 var frame : int
 # 计算noteSpawnFrame的误差可能导致打击帧数前后偏移一帧
-# @onready var noteSpawnFrame : int = int(inFrame - (spawnHeight/(globalSpeed*SPEED_COEFFICIENT)*FRAME_RATE))
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	print("current offset: ", referenceOffset)
@@ -50,6 +51,7 @@ func _ready() -> void:
 	soundPlayer.stream = load(currentMusic)
 	note_spawner.spawnheight = spawnHeight
 	referenceOffset = spawnHeight*10/(globalSpeed*2)
+	chartLoader.load_chart("res://charts/dummy_chart.yaml")
 	
 
 func _physics_process(_delta: float) -> void:
