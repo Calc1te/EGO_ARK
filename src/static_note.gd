@@ -1,5 +1,5 @@
 extends Node2D
-class_name Note
+class_name StatNote
 
 enum NoteType { Tap, Slide, Flick, HoldStart, HoldBody }
 

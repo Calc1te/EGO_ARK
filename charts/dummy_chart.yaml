@@ -1,6 +1,6 @@
 General:
   # 谱面信息
-  AudioFileName: "user://path/to/audio"          # 音频文件路径
+  AudioFilePath: "user://path/to/audio"          # 音频文件路径
   AudioPreview: [1000, 3000]                     # 选曲界面歌曲预览开始-结束时间 (毫秒)
   Title: "TestSong"                              # 歌曲标题
   Artist: "TestArtist"                           # 艺术家
@@ -37,6 +37,6 @@ Notes:
   # 速度修正默认为1，先应用BPM修正再应用此项修正
 
   - [3000, 11, 1.0, -1, null]                 # 示例：3000ms处中心轨道默认速度Tap Note
-  - [4000, 21, 1.5, 90, null]                 # 示例：4000ms处半球轨道90度位置1.5倍速Tap Note
+  # - [4000, 21, 1.5, 90, null]                 # 示例：4000ms处半球轨道90度位置1.5倍速Tap Note
   - [6000, 12, 1.0, -1, 500]                  # 示例：6000ms处中心轨道Hold Note，持续500ms
-  - [6200, 13, 1.0, -1, 2]                    # 示例：6200ms处中心轨道Flick Note，向上
+  # - [6200, 13, 1.0, -1, 2]                    # 示例：6200ms处中心轨道Flick Note，向上

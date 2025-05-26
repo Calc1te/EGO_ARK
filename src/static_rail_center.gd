@@ -9,7 +9,7 @@ const SPEED_COEFFICIENT : int = 200
 func _ready() -> void:
 	pass
 
-func spawnNote(note_type : Note.NoteType, speed : float, noteID : int, inTime : int, holdDuration : int):
+func spawnNote(note_type : StatNote.NoteType, speed : float, noteID : int, inTime : int, holdDuration : int):
 	speed = SPEED_COEFFICIENT * speed
 	var instance = noteScene.instantiate()
 	instance.position.y = -spawnheight
@@ -28,14 +28,14 @@ func _on_judge_enabled(node: Node2D) -> void:
 		return
 
 	node.isAutoPlay = true
-	if node.thisNoteType in [Note.NoteType.Tap, Note.NoteType.Slide, Note.NoteType.Flick]:
+	if node.thisNoteType in [StatNote.NoteType.Tap, StatNote.NoteType.Slide, StatNote.NoteType.Flick]:
 		var delay : float = (522.0-400) / node.speed
 		print(delay)
 		await get_tree().create_timer(delay).timeout
 		node._tap_hit()    
 		return
 
-	if node.thisNoteType == Note.NoteType.HoldStart:
+	if node.thisNoteType == StatNote.NoteType.HoldStart:
 		# 等到“预定按下时刻”
 		var start_delay : float = (522.0-400) / node.speed
 		await get_tree().create_timer(start_delay).timeout

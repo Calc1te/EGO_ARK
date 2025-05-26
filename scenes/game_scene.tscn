@@ -33,3 +33,15 @@ script = ExtResource("5_fasfa")
 
 [node name="ChartLoader" type="Node2D" parent="."]
 script = ExtResource("6_rurhu")
+
+[node name="score" type="RichTextLabel" parent="."]
+offset_left = 44.0
+offset_top = 35.0
+offset_right = 183.0
+offset_bottom = 75.0
+
+[node name="combo" type="RichTextLabel" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[connection signal="chart_loaded" from="ChartLoader" to="." method="_on_chart_loaded"]
