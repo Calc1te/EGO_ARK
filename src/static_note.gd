@@ -1,105 +1,153 @@
 extends Node2D
-class_name Note
+class_name StatNote
 
-enum NoteType{
-	Tap, #0
-	Slide, #1
-	Flick, #2
-	HoldStart, #3
-	HoldBody #4
-}
+enum NoteType { Tap, Slide, Flick, HoldStart, HoldBody }
+
 const NO_HOLD_DURATION := -1
 const MISS := 65535
 const ELIMINATION_START := 575
 const ELIMINATION_END := 700
 
-const TEXTURE_TAP := "res://temp_assets/tap.png"
-const TEXTURE_HOLD := "res://temp_assets/hold Background Removed.png"
-const TEXTURE_FLICK := "res://temp_assets/lineRailRoot Background Removed.png"
-const TEXTURE_HOLD_HEAD := "res://temp_assets/hold Background Removed.png"
-const TEXTURE_HOLD_BODY := ""
+const TEXTURE_TAP        := "res://temp_assets/tap.png"
+const TEXTURE_HOLD       := "res://temp_assets/hold Background Removed.png"
+const TEXTURE_FLICK      := "res://temp_assets/lineRailRoot Background Removed.png"
+const TEXTURE_HOLD_HEAD  := "res://temp_assets/hold Background Removed.png"
+const TEXTURE_HOLD_BODY  := "res://temp_assets/hold_BODY.png"
 
-var speed : float
-var noteID : int
-var holdDuration : int = -1 # ms
-var inTime : int # the time this note is supposed to be hit
-var inJudgement : bool # if the note entered the Judgement area
-var isActivate : bool # if the note is the "nearest to judgement line"
-var isHoldActive : bool # active when holdStart is pressed
+
+# ────────────────────────── 状态量 ──────────────────────────
+var speed           : float
+var noteID          : int
+var durationTime    : int          # ms hold的理论持续时间
+var inTime          : int          # 音符生成的时间，会在计算判定时被referenceOffset抵消
+var inJudgement     : bool = false # 是否进入判定区
+var isActivate     	: bool = false # 是否是“最近的”可判定音符
+var isHoldActive   	: bool = false # Hold 当前是否处于按住状态
+
+var holdDuration   	: int  = 0     # 每实例独立
+var holdLength 		: int		   # 用于生成HoldBody长度
+var hitTime        	: int  = -1    # 开始按下的绝对时间
+
+# 用于实时计算 Hold 时长
+var _hold_start_time : int = -1   # 仅 HoldStart 使用
 
 signal judgementEnabled(node : Node2D)
-signal noteDestroyed(type : NoteType, hitoffset : int, posY : int, holdDuration : int)
-# for all note that isn't hold, hold duration should be -1(NO_HOLD_DURATION)
+signal noteDestroyed(hitOffset : int, posY : int, holdDuration : int)
+
 @export var thisNoteType : NoteType = NoteType.HoldStart
+@onready var spriteNode : Sprite2D = $Sprite2D
+@onready var holdBodyContainer : Node2D = $holdBodyContainer
+@export var isAutoPlay := false
 
-@onready var spriteNode = $Sprite2D
-
-
-# Called when the node enters the scene tree for the first time.
+# ────────────────────────── 生命周期 ──────────────────────────
 func _ready() -> void:
 	$Area2D.connect("area_entered", _on_area_entered)
-	match thisNoteType:
-		NoteType.Tap:
-			spriteNode.texture = load(TEXTURE_TAP)
-		NoteType.Slide: 
-			spriteNode.texture = load(TEXTURE_HOLD)
-		NoteType.Flick:
-			spriteNode.texture = load(TEXTURE_FLICK)
-		NoteType.HoldStart:
-			spriteNode.texture = load(TEXTURE_HOLD_HEAD)
-		NoteType.HoldBody:
-			spriteNode.texture = load(TEXTURE_HOLD_BODY)
-	pass # Replace with function body.
+	_setup_texture()
+	_reset_hold_state()
+	spriteNode.z_index = 10
+	if thisNoteType == NoteType.HoldStart:
+		_draw_hold_bodies()
 
-
-func _process(delta: float) -> void:
-	if not isHoldActive:
-		position.y+=speed*delta
-	
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(_delta: float) -> void:
-
+	_move_note(_delta)
 	_check_elimination()
-	_check_input()
-	
-func _on_area_entered(area : Area2D):
+	_check_input()          
+	_update_hold_duration()
+
+# ────────────────────────── 内部逻辑 ──────────────────────────
+func _setup_texture() -> void:
+	match thisNoteType:
+		NoteType.Tap:        spriteNode.texture = load(TEXTURE_TAP)
+		NoteType.Slide:      spriteNode.texture = load(TEXTURE_HOLD)
+		NoteType.Flick:      spriteNode.texture = load(TEXTURE_FLICK)
+		NoteType.HoldStart:  spriteNode.texture = load(TEXTURE_HOLD_HEAD)
+		
+
+func _reset_hold_state() -> void: 
+	isHoldActive     = false
+	holdDuration     = 0
+	hitTime          = -1
+	_hold_start_time = -1
+
+func _move_note(delta: float) -> void:
+	if !isHoldActive:
+		position.y += speed * delta
+	if isHoldActive:
+		holdBodyContainer.position.y += speed*delta   
+
+func _on_area_entered(area : Area2D) -> void:
 	if area.name == "JudgeArea2D":
-		emit_signal("judgementEnabled",self)
+		inJudgement = true
+		emit_signal("judgementEnabled", self)
+
 	
 
 func _check_input() -> void:
-	if thisNoteType == NoteType.Tap:
-		if Input.is_action_just_pressed("hit_center_track")&&isActivate&&inJudgement:
-			print("hit")
-			var hitTime = Time.get_ticks_msec()
-			var offset = hitTime - inTime
-			emit_signal("noteDestroyed", thisNoteType, offset, position.y, NO_HOLD_DURATION)
-			queue_free()
-			return
-	if thisNoteType == NoteType.HoldStart:
-		var hitTime : int = 0
-		var offset : int = 0
-		var durationTime : int = 0
-		if Input.is_action_just_pressed("hit_center_track")&&isActivate&&inJudgement:
-			isHoldActive = true
-			hitTime = Time.get_ticks_msec()
-			offset = hitTime - inTime
-		if Input.is_action_pressed("hit_center_track")&&isActivate&&inJudgement:
-			if isHoldActive:
-				durationTime = Time.get_ticks_msec() - hitTime
-		if Input.is_action_just_released("hit_center_track")&&isActivate&&inJudgement:
-			isHoldActive = false
-			emit_signal("noteDestroyed", thisNoteType, offset, position.y, durationTime)
-		if holdDuration < durationTime:
-			isHoldActive = false
-			
-	
-		#return hitTime - inTime
-		
-func _check_elimination():
-	if position.y > ELIMINATION_START:
-		spriteNode.modulate.a = 1.0 - (ELIMINATION_END-position.y)/(ELIMINATION_END-ELIMINATION_START)
-	if position.y>=ELIMINATION_END:
-		emit_signal("noteDestroyed", thisNoteType, MISS, MISS, MISS)
+
+	if !is_inside_tree(): return
+	if !isActivate || !inJudgement: return
+
+	match thisNoteType:
+		NoteType.Tap:
+			if Input.is_action_just_pressed("hit_center_track"):
+				_tap_hit()
+		NoteType.HoldStart:
+			if !isHoldActive and Input.is_action_just_pressed("hit_center_track"):
+				_start_hold()
+			elif isHoldActive and Input.is_action_just_released("hit_center_track"):
+				_end_hold()
+		NoteType.Slide:
+			if Input.is_action_just_pressed("hit_center_track")||Input.is_action_pressed("hit_center_track"):
+				_slide_hit()
+
+func _tap_hit() -> void:
+	hitTime = Time.get_ticks_msec()
+	var offset := hitTime - inTime
+	emit_signal("noteDestroyed", offset, position.y, NO_HOLD_DURATION)
+	queue_free()
+
+# ────────────────────────── Hold ─────────────────────────────────
+func _draw_hold_bodies() -> void:
+	var yOffset = 0
+	for i in range(durationTime):
+		var holdBodyClone = Sprite2D.new()
+		holdBodyClone.texture = load(TEXTURE_HOLD_BODY)
+		holdBodyClone.position = Vector2(0,yOffset)
+		holdBodyClone.z_index = 0
+		holdBodyContainer.add_child(holdBodyClone)
+		yOffset -= 1
+
+func _start_hold() -> void:
+	isHoldActive     = true
+	_hold_start_time = Time.get_ticks_msec()
+	hitTime          = _hold_start_time   # 记录首击时刻
+
+func _update_hold_duration() -> void:
+	var early_release := !isAutoPlay && !Input.is_action_pressed("hit_center_track")
+	if isHoldActive:
+		holdDuration = Time.get_ticks_msec() - _hold_start_time
+		if holdDuration >= (durationTime+50) or early_release:
+			_end_hold()
+
+func _end_hold() -> void:
+	isHoldActive = false
+	var offset := hitTime - inTime  # 命中偏差仍用首击时刻计算
+	# print('ref:',offset,',',abs(holdDuration-durationTime))
+	emit_signal("noteDestroyed", offset, position.y, abs(holdDuration-durationTime))
+	queue_free()
+
+
+# ────────────────────────── Slide ────────────────────────────────
+func _slide_hit() -> void:
+	emit_signal("noteDestroyed", 1000, position.y, NO_HOLD_DURATION)
+	queue_free()
+	 
+
+# ────────────────────────── Miss & Fade Out ──────────────────────────
+func _check_elimination() -> void:
+	if position.y > 575.0:
+		spriteNode.modulate.a = 1.0 - (700.0 - position.y) / 125.0
+	if position.y >= 700.0:
+		emit_signal("noteDestroyed", MISS, MISS, MISS)
+
 		queue_free()

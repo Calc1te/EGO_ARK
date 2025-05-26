@@ -1,59 +1,47 @@
 extends Node2D
 class_name noteRoot
-# The center of linerail, should also be the spawner of notes
-var spawnheight : int
+
+@export var autoPlay: bool = false
 @export var noteScene : PackedScene
+var spawnheight : int
 const SPEED_COEFFICIENT : int = 200
-const TAP := 0
-const SLIDE := 1
-const FLICK := 2
-const HOLD := 3
-# Called when the node enters the scene tree for the first time.
+
 func _ready() -> void:
-	pass # Replace with function body.
+	pass
 
-
-func spawnNote(note_type : Note.NoteType, speed : float, noteID : int, inTime : int, holdDuration : int = -1):
-	print("spawner called")
-	speed = SPEED_COEFFICIENT*speed
-	if noteScene==null:
-		return
+func spawnNote(note_type : StatNote.NoteType, speed : float, noteID : int, inTime : int, holdDuration : int):
+	speed = SPEED_COEFFICIENT * speed
 	var instance = noteScene.instantiate()
-	if spawnheight < 0 or speed <= 0:
-		print("Error: Invalid spawnheight or speed.")
-		return null
-	if instance == null:
-		print("Error: Failed to instantiate noteScene.")
-		return null
-	# 此处的position是相对（判定原点的）坐标系
-	#instance.position.x = position.x
 	instance.position.y = -spawnheight
 	instance.thisNoteType = note_type
 	instance.speed = speed
 	instance.noteID = noteID
-	instance.inTime = Time.get_ticks_msec()
-	match note_type:
-		0,1: #Tap/Slide
-			pass
-		2:
-			pass #TODO: flick direction
-		3: #Hold
-			instance.holdDuration = holdDuration
+	instance.inTime = inTime               # 传入真正的判定时间
+	instance.durationTime = holdDuration   # 对 Hold 有效
 	add_child(instance)
-	instance.connect("judgementEnabled", _on_judge_enabled)
+	instance.connect("judgementEnabled", Callable(self, "_on_judge_enabled"))
 	return instance
-	
-#func spawnNodeWithoutAdding():
-	#if noteScene == null:
-		#return
-	#var instance = noteScene.instantiate()
-	#instance.position.x = position.x
-	#instance.position.y = position.y-spawnheight
-	#
-	#print(instance)
-	#return instance
-	
-func _on_judge_enabled(node : Node2D):
-	print(node.noteID)
-	node.inJudgement = true
-	#print("received check")
+
+# 标记为 async，就可以用 await
+func _on_judge_enabled(node: Node2D) -> void:
+	if not autoPlay:
+		return
+
+	node.isAutoPlay = true
+	if node.thisNoteType in [StatNote.NoteType.Tap, StatNote.NoteType.Slide, StatNote.NoteType.Flick]:
+		var delay : float = (522.0-400) / node.speed
+		print(delay)
+		await get_tree().create_timer(delay).timeout
+		node._tap_hit()    
+		return
+
+	if node.thisNoteType == StatNote.NoteType.HoldStart:
+		# 等到“预定按下时刻”
+		var start_delay : float = (522.0-400) / node.speed
+		await get_tree().create_timer(start_delay).timeout
+		node._start_hold()
+
+
+		var end_delay : float = start_delay + node.durationTime 
+		await get_tree().create_timer(end_delay).timeout
+		node._end_hold()
