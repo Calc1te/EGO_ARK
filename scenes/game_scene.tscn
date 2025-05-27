@@ -4,8 +4,8 @@
 [ext_resource type="Script" uid="uid://f4gy50otvith" path="res://src/static_rail_center.gd" id="1_u818j"]
 [ext_resource type="Texture2D" uid="uid://xyhc6fbamoaf" path="res://temp_assets/lineRailRoot Background Removed.png" id="4_8mkbk"]
 [ext_resource type="PackedScene" uid="uid://1qob67o7hcvv" path="res://scenes/staticNote.tscn" id="4_dej4e"]
-[ext_resource type="Script" path="res://sound.gd" id="5_fasfa"]
-[ext_resource type="Script" uid="uid://dueanyaxdwbcs" path="res://src/chart_loader.gd" id="6_rurhu"]
+[ext_resource type="Script" path="res://src/sound.gd" id="5_fasfa"]
+[ext_resource type="Script" path="res://src/chart_loader.gd" id="6_rurhu"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_xaj84"]
 distance = 152.0
