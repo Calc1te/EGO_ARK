@@ -35,14 +35,15 @@ signal judgementEnabled(node : Node2D)
 signal noteDestroyed(hitOffset : int, posY : int, holdDuration : int)
 
 @export var thisNoteType : NoteType = NoteType.HoldStart
-@onready var spriteNode : Sprite2D = $Sprite2D
+@onready var spriteNode : AnimatedSprite2D = $AnimatedSprite2D
 @onready var holdBodyContainer : Node2D = $holdBodyContainer
 @export var isAutoPlay := false
-
+var thisNoteRoot : Node2D =  null
 # ────────────────────────── 生命周期 ──────────────────────────
 func _ready() -> void:
 	$Area2D.connect("area_entered", _on_area_entered)
 	_setup_texture()
+	thisNoteRoot = get_parent()
 	_reset_hold_state()
 	spriteNode.z_index = 10
 	if thisNoteType == NoteType.HoldStart:
@@ -57,10 +58,11 @@ func _physics_process(_delta: float) -> void:
 # ────────────────────────── 内部逻辑 ──────────────────────────
 func _setup_texture() -> void:
 	match thisNoteType:
-		NoteType.Tap:        spriteNode.texture = load(TEXTURE_TAP)
-		NoteType.Slide:      spriteNode.texture = load(TEXTURE_HOLD)
-		NoteType.Flick:      spriteNode.texture = load(TEXTURE_FLICK)
-		NoteType.HoldStart:  spriteNode.texture = load(TEXTURE_HOLD_HEAD)
+		NoteType.Tap:       spriteNode.animation = "tap"
+		NoteType.Slide:		spriteNode.animation = "slide"
+		NoteType.Flick:		spriteNode.animation = "flick"
+		NoteType.HoldStart:	spriteNode.animation = "holdStart"
+	spriteNode.play()
 		
 
 func _reset_hold_state() -> void: 
@@ -73,7 +75,13 @@ func _move_note(delta: float) -> void:
 	if !isHoldActive:
 		position.y += speed * delta
 	if isHoldActive:
-		holdBodyContainer.position.y += speed*delta   
+		holdBodyContainer.position.y += speed * delta * _get_angle()[0] 
+
+
+func _get_angle():
+	# no longer use
+	var angle : float = thisNoteRoot.rotation
+	return [sin(angle), cos(angle)]
 
 func _on_area_entered(area : Area2D) -> void:
 	if area.name == "JudgeArea2D":

@@ -3,7 +3,9 @@ class_name noteRoot
 
 @export var autoPlay: bool = false
 @export var noteScene : PackedScene
-var spawnheight : int
+# 旋转直接修改当前轨道的rotation 弧度制
+var spawnHeight : int
+var horizontalOffset : float # pixels
 const SPEED_COEFFICIENT : int = 200
 
 func _ready() -> void:
@@ -12,7 +14,8 @@ func _ready() -> void:
 func spawnNote(note_type : StatNote.NoteType, speed : float, noteID : int, inTime : int, holdDuration : int):
 	speed = SPEED_COEFFICIENT * speed
 	var instance = noteScene.instantiate()
-	instance.position.y = -spawnheight
+	instance.position.y = -spawnHeight
+	instance.position.x = 0
 	instance.thisNoteType = note_type
 	instance.speed = speed
 	instance.noteID = noteID

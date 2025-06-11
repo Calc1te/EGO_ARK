@@ -55,7 +55,7 @@ func _ready() -> void:
 	print("current offset: ", referenceOffset)
 	frame = 0
 	soundPlayer.stream = load(currentMusic)
-	note_spawner.spawnheight = spawnHeight
+	note_spawner.spawnHeight = spawnHeight
 	referenceOffset = spawnHeight*10/(globalSpeed*2)
 	
 
