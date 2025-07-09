@@ -16,7 +16,7 @@ class_name gameScene
 @export var referenceOffset : float = 0
 
 ###### Game-Related Constants ######
-const FRAME_RATE = 120
+const FRAME_RATE = 120 # Change this might break the whole judgement system
 const SPEED_COEFFICIENT = 200
 
 ##### Judgement Constants ##### DT for central track #####
@@ -46,17 +46,37 @@ var next_note_idx : int = 0
 var current_BPM : int
 var song_start_time : int
 var entry
+
+###### Game State Variables ######
+var is_game_started : bool = false
+var is_game_ended : bool = false
+
+###### Score and Accuracy Variables ######
+var current_score : int = 0
+var max_combo : int = 0
+var current_combo : int = 0
+var total_notes : int = 0
+var notes_hit : int = 0
+var crit_perfect_count : int = 0
+var perfect_count : int = 0
+var good_count : int = 0
+var bad_count : int = 0
+var miss_count : int = 0
 # 计算noteSpawnFrame的误差可能导致打击帧数前后偏移一帧
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	chartLoader.connect("chart_loaded", _on_chart_loaded)
-	chartLoader.load_chart("res://charts/dummy_chart.yaml")
+	chartLoader.load_chart(Global.current_song_select.chart_path)
 	print("current offset: ", referenceOffset)
 	frame = 0
 	soundPlayer.stream = load(currentMusic)
 	note_spawner.spawnHeight = spawnHeight
 	referenceOffset = spawnHeight*10/(globalSpeed*2)
+		
+	# Start the game
+	Global.state = Global.StateMachine.playing
+	
 	
 
 func _physics_process(_delta: float) -> void:
@@ -119,7 +139,27 @@ func _on_note_destroyed(acc, posY, holdDuration):
 	if isDemoPlay:
 		drawDemoHit(posY)
 	
-	
+	# Check if game should end
+	check_game_end()
+
+
+func check_game_end():
+	if is_game_started and not is_game_ended:
+		# Game ends when all notes are processed and no more notes are spawning
+		if next_note_idx >= upcoming_notes.size() and noteArray.size() == 0:
+			is_game_ended = true
+			# send a signal to the stage clear node with judgement data
+			print("Game ended!")
+			var acc : float = get_accuracy()
+			# TODO : move to clear screen
+
+
+func get_accuracy() -> float:
+	if total_notes == 0:
+		return 0.0
+	return (1*crit_perfect_count+.9*perfect_count+.3*good_count)/total_notes
+
+
 func updateSpeed():
 	referenceOffset = spawnHeight*10/(globalSpeed*2)
 	print("speed Updated, new reference offset: ",referenceOffset)
@@ -140,41 +180,96 @@ func calculate_acc(acc : int, holdError : int):
 	#acc是按照毫秒计算不是帧数计算
 	if acc == 1000 && holdError == -1:
 		print("slide Perfect")
+		add_score_and_combo("perfect")
 		return
 	var hitError : int = abs(acc - referenceOffset + playerOffset)
 	print(acc - referenceOffset + playerOffset)
 	if holdError == -1:
 		if hitError > DT_BAD:
 			print("miss")
+			add_score_and_combo("miss")
 		elif hitError < DT_BAD && hitError > DT_GOOD:
 			print("bad")
+			add_score_and_combo("bad")
 		elif hitError < DT_GOOD && hitError > DT_PERFECT:
 			print("good")
+			add_score_and_combo("good")
 		elif hitError < DT_PERFECT && hitError > DT_CRIT_PERFECT:
 			print("perfect")
+			add_score_and_combo("perfect")
 		elif hitError < DT_CRIT_PERFECT:
 			print("crit perfect")
+			add_score_and_combo("crit_perfect")
 
 	else:
 		hitError = int(hitError+holdError*HOLD_SCALING)
 		print(hitError)
 		if hitError > DT_BAD:
 			print("miss")
+			add_score_and_combo("miss")
 		elif hitError < DT_BAD && hitError > DT_GOOD:
 			print("bad")
+			add_score_and_combo("bad")
 		elif hitError < DT_GOOD && hitError > DT_PERFECT:
 			print("good")
+			add_score_and_combo("good")
 		elif hitError < DT_PERFECT && hitError > DT_CRIT_PERFECT:
 			print("perfect")
+			add_score_and_combo("perfect")
 		elif hitError < DT_CRIT_PERFECT:
 			print("crit perfect")
+			add_score_and_combo("crit_perfect")
+
+
+func add_score_and_combo(judgement: String):
+	if not is_game_started or is_game_ended:
+		return
+	
+	match judgement:
+		"crit_perfect":
+			current_score += int(singleNoteScore * 1.0)
+			current_combo += 1
+			crit_perfect_count += 1
+			notes_hit += 1
+		"perfect":
+			current_score += int(singleNoteScore * 1.0)
+			current_combo += 1
+			perfect_count += 1
+			notes_hit += 1
+		"good":
+			current_score += int(singleNoteScore * 0.7)
+			current_combo += 1
+			good_count += 1
+			notes_hit += 1
+		"bad":
+			current_score += int(singleNoteScore * 0.1)
+			current_combo = 0
+			bad_count += 1
+			notes_hit += 1
+		"miss":
+			current_combo = 0
+			miss_count += 1
+	
+	# Update max combo
+	if current_combo > max_combo:
+		max_combo = current_combo
+	
+	# Update displays
+	update_displays()
+
+
+func update_displays():
+	if scoreDisplay:
+		scoreDisplay.text = str(current_score)
+	if comboDisplay:
+		comboDisplay.text = str(current_combo)
 
 
 func _on_chart_loaded(data: Dictionary, events: Array, notes: Array) -> void:
+	# TODO implement event array
 	print("chart_loaded")
 	currentMusic = data["AudioFilePath"]
 	current_BPM = data["BPM"]
-	var maxCombo : int = notes.size()
 	var travel_ms = _compute_travel_time_ms()
 
 	for note_data in notes:
@@ -186,7 +281,8 @@ func _on_chart_loaded(data: Dictionary, events: Array, notes: Array) -> void:
 		})
 	upcoming_notes.sort_custom(_sort_by_spawn_time)
 	song_start_time = Time.get_ticks_msec()
-	score_init(maxCombo)
+	total_notes = notes.size()
+	score_init(total_notes)
 	
 
 func _compute_travel_time_ms() -> float:
