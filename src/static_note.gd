@@ -35,7 +35,7 @@ signal judgementEnabled(node : Node2D)
 signal noteDestroyed(hitOffset : int, posY : int, holdDuration : int)
 
 @export var thisNoteType : NoteType = NoteType.HoldStart
-@onready var spriteNode : AnimatedSprite2D = $AnimatedSprite2D
+@onready var spriteNode : AnimatedSprite2D = $Sprite2D
 @onready var holdBodyContainer : Node2D = $holdBodyContainer
 @export var isAutoPlay := false
 var thisNoteRoot : Node2D =  null
