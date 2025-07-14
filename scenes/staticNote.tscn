@@ -1,7 +1,53 @@
-[gd_scene load_steps=4 format=3 uid="uid://1qob67o7hcvv"]
+[gd_scene load_steps=8 format=3 uid="uid://1qob67o7hcvv"]
 
 [ext_resource type="Script" uid="uid://c7ijie7k3ke8o" path="res://src/static_note.gd" id="1_k5fuw"]
+[ext_resource type="Texture2D" uid="uid://k72ao7yq8dg" path="res://temp_assets/hold_BODY.png" id="2_fe54y"]
 [ext_resource type="Texture2D" uid="uid://dt7k11wg3scaj" path="res://temp_assets/hold Background Removed.png" id="2_i2ank"]
+[ext_resource type="Texture2D" uid="uid://b171jr3lsvuy4" path="res://temp_assets/slide.png" id="3_upqyn"]
+[ext_resource type="Texture2D" uid="uid://dj4mchwa8fvjm" path="res://temp_assets/tap.png" id="4_fe54y"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_lku08"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_fe54y")
+}],
+"loop": true,
+"name": &"eliminate",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_fe54y")
+}],
+"loop": true,
+"name": &"flick",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_i2ank")
+}],
+"loop": true,
+"name": &"holdStart",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_upqyn")
+}],
+"loop": true,
+"name": &"slide",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_fe54y")
+}],
+"loop": true,
+"name": &"tap",
+"speed": 5.0
+}]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_64ug5"]
 radius = 4.0
@@ -11,8 +57,9 @@ height = 8.0
 script = ExtResource("1_k5fuw")
 thisNoteType = 0
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_i2ank")
+[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_lku08")
+animation = &"holdStart"
 
 [node name="Area2D" type="Area2D" parent="."]
 

@@ -3,7 +3,9 @@ class_name noteRoot
 
 @export var autoPlay: bool = false
 @export var noteScene : PackedScene
-var spawnheight : int
+# 旋转直接修改当前轨道的rotation 弧度制
+var spawnHeight : int
+var horizontalOffset : float # pixels
 const SPEED_COEFFICIENT : int = 200
 
 func _ready() -> void:
@@ -12,7 +14,8 @@ func _ready() -> void:
 func spawnNote(note_type : StatNote.NoteType, speed : float, noteID : int, inTime : int, holdDuration : int):
 	speed = SPEED_COEFFICIENT * speed
 	var instance = noteScene.instantiate()
-	instance.position.y = -spawnheight
+	instance.position.y = -spawnHeight
+	instance.position.x = 0
 	instance.thisNoteType = note_type
 	instance.speed = speed
 	instance.noteID = noteID
@@ -22,7 +25,6 @@ func spawnNote(note_type : StatNote.NoteType, speed : float, noteID : int, inTim
 	instance.connect("judgementEnabled", Callable(self, "_on_judge_enabled"))
 	return instance
 
-# 标记为 async，就可以用 await
 func _on_judge_enabled(node: Node2D) -> void:
 	if not autoPlay:
 		return
@@ -36,7 +38,6 @@ func _on_judge_enabled(node: Node2D) -> void:
 		return
 
 	if node.thisNoteType == StatNote.NoteType.HoldStart:
-		# 等到“预定按下时刻”
 		var start_delay : float = (522.0-400) / node.speed
 		await get_tree().create_timer(start_delay).timeout
 		node._start_hold()

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://ble65wqv3q8rf"
+path="res://.godot/imported/Darkless Ares.mp3-00895899a78e07514b083dcdcfe581a9.mp3str"
+
+[deps]
+
+source_file="res://songs/chpt1/Darkless Ares.mp3"
+dest_files=["res://.godot/imported/Darkless Ares.mp3-00895899a78e07514b083dcdcfe581a9.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

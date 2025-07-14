@@ -1,7 +1,7 @@
 General:
   # 谱面信息
-  AudioFilePath: "user://path/to/audio"          # 音频文件路径
-  AudioPreview: [1000, 3000]                     # 选曲界面歌曲预览开始-结束时间 (毫秒)
+  AudioId: 123
+  ChartId: 456                     # 选曲界面歌曲预览开始-结束时间 (毫秒)
   Title: "TestSong"                              # 歌曲标题
   Artist: "TestArtist"                           # 艺术家
   Creator: "Creator"                             # 谱师
