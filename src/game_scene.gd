@@ -1,7 +1,7 @@
 extends Node2D
 class_name gameScene
 
-@onready var note_spawner : noteRoot = $staticRailsContainer/staticRailCenter
+@onready var note_spawner : noteRoot
 @onready var noteID : int = 0
 @onready var soundPlayer : AudioStreamPlayer = $AudioStreamPlayer
 @onready var chartLoader : ChartLoader = $ChartLoader
@@ -19,6 +19,7 @@ class_name gameScene
 ###### Game-Related Constants ######
 const FRAME_RATE = 120 # Change this might break the whole judgement system
 const SPEED_COEFFICIENT = 200
+
 ###### In-game variables ######
 var noteArray = Array()
 var singleNoteScore : float
@@ -91,7 +92,7 @@ func _spawn_from_data(note_data : Array):
 
 
 
-
+# why there's so many blank line
 
 
 func _on_receive_hit(acc, posY, holdDuration):
