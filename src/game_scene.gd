@@ -47,7 +47,7 @@ func _ready() -> void:
 	frame = 0
 	soundPlayer.stream = load(currentMusic)
 	# fixme: thi should be changed since the logic is different now
-	var note_spawner = $staticRailsContainer/staticRailCenter
+	note_spawner = $staticRailsContainer/staticRailCenter
 	note_spawner.spawnHeight = spawnHeight
 	note_handler.initialize(note_spawner)
 	note_handler.connect("gameplay_BPM_change",note_handler._on_BPM_change)

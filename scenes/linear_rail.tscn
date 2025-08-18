@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://cayuuknd46xhm"]
+
+[ext_resource type="Script" uid="uid://2qrdok6nm5it" path="res://src/linear_rail.gd" id="1_65ijj"]
+[ext_resource type="Texture2D" uid="uid://b5tqfyks1krm7" path="res://assets/playground/play_line.png" id="1_cmhid"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_65ijj"]
+distance = 100.0
+
+[node name="LinearRail" type="Node2D"]
+script = ExtResource("1_65ijj")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+rotation = 1.5708
+texture = ExtResource("1_cmhid")
+offset = Vector2(-390, 2)
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("WorldBoundaryShape2D_65ijj")
