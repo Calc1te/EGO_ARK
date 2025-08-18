@@ -1,6 +1,10 @@
 extends Node
 class_name GSNote
 
+var current_BPM : float
+var ref_BPM : float
+var sv_BPM_coefficient : float
+
 var note_spawner : noteRoot  # Will be set by parent
 var noteArray = Array()
 signal pass_destroy_to_GS(acc, posY, holdDuration)
@@ -8,9 +12,14 @@ var noteID : int = 0
 
 func initialize(spawner: noteRoot):
 	note_spawner = spawner
+	sv_BPM_coefficient = current_BPM/ref_BPM
+	
+func _on_BPM_change(BPM : float):
+	current_BPM = BPM
+	sv_BPM_coefficient = current_BPM/ref_BPM
 
 func spawnNote(note_type, speed, note_id, _parameter):
-	var note = note_spawner.spawnNote(note_type, speed, note_id, Time.get_ticks_msec(), -1)
+	var note = note_spawner.spawnNote(note_type, speed*sv_BPM_coefficient, note_id, Time.get_ticks_msec(), -1)
 	note.connect("noteDestroyed",Callable(self, "_on_note_destroyed"))
 	noteArray.append(note)
 
