@@ -13,7 +13,8 @@ var next_event_idx: int = 0
 var rail_manager = {}
 
 signal gameplay_BPM_change(bpm : float)
-signal linear_rail_init(name : String, pos : Vector2, rot : float)
+signal linear_rail_init(rail_name : String, pos : Vector2, rot : float)
+signal linear_rail_destroy(rail_name : String)
 # TODO : finish this before Aug20
 # update at Aug22 : we are so back
 func _ready() -> void:
@@ -67,6 +68,10 @@ func _init_rail(data):
     var rot = deg_to_rad(data[3])
     emit_signal("linear_rail_init",rail_name,pos,rot)
 
+
+func _destroy_rail(rail_name : String):
+    emit_signal("linear_rail_destroy",rail_name)
+
 func _parse_continuous_event(event):
     # later
     pass
@@ -78,4 +83,5 @@ func _change_bpm(bpm):
 func _add_rail_to_GS(root : Node2D):
     rail_manager[root.name] = root
 
-        
+func _remove_rail_from_GS(rail_name : String):
+    rail_manager[rail_name] = null    
