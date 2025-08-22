@@ -6,6 +6,7 @@ class_name gameScene
 
 @onready var soundPlayer : AudioStreamPlayer = $AudioStreamPlayer
 @onready var chartLoader : ChartLoader = $ChartLoader
+@onready var lineRailContainer : linearRailContainer = $LinearRailContainer
 
 @onready var comboDisplay : RichTextLabel = $combo
 @onready var scoreDisplay : RichTextLabel = $score
@@ -28,7 +29,6 @@ var noteArray = Array()
 var singleNoteScore : float
 var frame : int
 var upcoming_notes : Array = []
-var event_array : Array = []
 var next_note_idx : int = 0
 var song_start_time : int
 var entry # the fuck is entry
@@ -94,7 +94,7 @@ func _spawn_from_data(note_data : Array):
 		note.connect("noteDestroyed",note_handler._on_note_destroyed)
 		note_handler.noteArray.append(note)
 
-	else: pass # TODO: add hemisphere note
+	else: pass # TODO: add sphere note
 
 
 

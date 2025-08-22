@@ -7,7 +7,6 @@ class_name staticNoteRoot
 # @onready var touchJudgementArea : TouchScreenButton = $TouchScreenButton
 
 var active_notes = []
-var this_root_name : String
 var is_init : bool = false
 var spawnHeight : int
 var horizontalOffset: float # pixels
@@ -18,7 +17,7 @@ func _ready() -> void:
 
 func init(root_name : String, pos : Array) -> void:
 	assert(pos.size()==3 and name != null)
-	this_root_name = root_name
+	self.name = root_name
 	self.position.x = pos[1]
 	self.position.y = pos[2]
 	self.rotation = pos[3]

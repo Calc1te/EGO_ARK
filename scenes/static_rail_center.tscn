@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://f4gy50otvith" path="res://src/static_rail_center.gd" id="1_3rykd"]
 [ext_resource type="PackedScene" uid="uid://1qob67o7hcvv" path="res://scenes/staticNote.tscn" id="2_xv747"]
-[ext_resource type="Texture2D" uid="uid://buocre57qg7sp" path="res://assets/playground/play_cursor.png" id="3_3rykd"]
+[ext_resource type="Texture2D" uid="uid://d2t6s3w2p72fb" path="res://assets/贴图/指针.png" id="3_3rykd"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_xaj84"]
 distance = 152.0
@@ -15,7 +15,8 @@ script = ExtResource("1_3rykd")
 noteScene = ExtResource("2_xv747")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-2, -168)
+position = Vector2(-7.10543e-15, -152)
+scale = Vector2(0.1, 0.1)
 texture = ExtResource("3_3rykd")
 
 [node name="JudgeArea2D" type="Area2D" parent="."]

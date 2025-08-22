@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://c2sfx38jn573p"]
 
 [ext_resource type="PackedScene" uid="uid://8kf6fmhqpl7" path="res://scenes/static_rail_center.tscn" id="1_k74c0"]
-[ext_resource type="Texture2D" uid="uid://b00kdg7sg8sue" path="res://assets/playground/play_sphere.png" id="2_sbaa2"]
+[ext_resource type="Texture2D" uid="uid://cwg2cb15yeakg" path="res://assets/贴图/轮盘.png" id="2_sbaa2"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_o1gow"]
 radius = 287.111
@@ -15,6 +15,7 @@ top_level = true
 light_mask = 2
 visibility_layer = 2
 position = Vector2(0, 1)
+scale = Vector2(0.34, 0.34)
 texture = ExtResource("2_sbaa2")
 
 [node name="Area2D" type="Area2D" parent="."]
@@ -23,3 +24,4 @@ texture = ExtResource("2_sbaa2")
 light_mask = 2
 visibility_layer = 2
 shape = SubResource("CircleShape2D_o1gow")
+debug_color = Color(0.51503, 0.420849, 1, 0.42)
