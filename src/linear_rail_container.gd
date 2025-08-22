@@ -13,6 +13,8 @@ func on_linear_rail_init(rail_name : String, pos : Vector2, rot : float):
     rail.this_root_name = rail_name;
     rail.position = pos
     rail.rotation = rot
+
+    # this is so wrong but another signal just feels worse
     get_parent().event_handler._add_rail_to_GS(rail)
 
     

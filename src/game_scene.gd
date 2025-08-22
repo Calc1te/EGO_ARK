@@ -53,6 +53,7 @@ func _ready() -> void:
 	note_handler.connect("gameplay_BPM_change",note_handler._on_BPM_change)
 	judgement.referenceOffset = spawnHeight*10/(judgement.globalSpeed*2)
 	note_handler.connect("pass_destroy_to_GS",_on_receive_hit)
+	event_handler.connect("linear_rail_init", lineRailContainer.on_linear_rail_init)
 	# Start the game
 	Global.state = Global.StateMachine.playing
 	

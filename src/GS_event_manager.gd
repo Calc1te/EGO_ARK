@@ -15,7 +15,7 @@ var rail_manager = {}
 signal gameplay_BPM_change(bpm : float)
 signal linear_rail_init(name : String, pos : Vector2, rot : float)
 # TODO : finish this before Aug20
-
+# update at Aug22 : we are so back
 func _ready() -> void:
     next_event_idx = 0
 
