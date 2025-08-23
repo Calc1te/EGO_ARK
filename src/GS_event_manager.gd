@@ -15,6 +15,8 @@ var rail_manager = {}
 signal gameplay_BPM_change(bpm : float)
 signal linear_rail_init(rail_name : String, pos : Vector2, rot : float)
 signal linear_rail_destroy(rail_name : String)
+signal rail_registered(rail: Node)
+signal rail_unregistered(rail_name: String)
 # TODO : finish this before Aug20
 # update at Aug22 : we are so back
 func _ready() -> void:
@@ -39,6 +41,7 @@ func _process_event(delta):
     while next_event_idx < upcoming_events.size() && upcoming_events[next_event_idx]["time"] <= NOW:
         _parse_instant_event(upcoming_events[next_event_idx])
         next_event_idx += 1
+    _update_active_events(delta)
 
 func _sort_by_event_time(a, b) -> bool:
     return a["time"] < b["time"]
@@ -59,7 +62,7 @@ func _parse_instant_event(event : Dictionary) -> void:
 
 
 
-func _update_active_events():
+func _update_active_events(delta):
     pass
 
 func _init_rail(data):
@@ -80,9 +83,17 @@ func _change_bpm(bpm):
     emit_signal("gameplay_BPM_change", bpm)
         
 
-func _add_rail_to_GS(root : Node2D):
+func register_rail(root : Node2D):
     rail_manager[root.name] = root
-    print("add rail to collection")
+    emit_signal("rail_registered", root)
 
-func _remove_rail_from_GS(rail_name : String):
-    rail_manager[rail_name] = null    
+func unregister_rail(rail_name : String):
+    if rail_name in rail_manager:
+        rail_manager.erase(rail_name)   
+    emit_signal("rail_unregistered", rail_name)
+
+func get_rail(rail_name : String) -> Node2D:
+    return rail_manager.get(rail_name, null)
+
+func get_active_rails() -> Array:
+    return rail_manager.values()

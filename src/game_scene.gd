@@ -63,6 +63,8 @@ func _ready() -> void:
 	note_handler.connect("pass_destroy_to_GS",_on_receive_hit)
 	event_handler.connect("linear_rail_init", lineRailContainer.on_linear_rail_init)
 	event_handler.connect("linear_rail_destroy", lineRailContainer.on_linear_rail_destroy)
+	event_handler.connect("rail_registered", lineRailContainer.on_linear_rail_init)
+	event_handler.connect("lrail_destroyed", lineRailContainer.on_linear_rail_destroy)
 	# Start the game
 	Global.state = Global.StateMachine.playing
 	
