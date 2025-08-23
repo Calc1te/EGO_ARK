@@ -35,6 +35,7 @@ func spawnNote(note_type: StatNote.NoteType, speed: float, noteID: int, inTime: 
 	instance.durationTime = holdDuration
 	add_child(instance)
 	active_notes.append(instance)
+	# waht the fuck?
 	instance.connect("tree_exiting", Callable(self, "_remove_note_from_active").bind(instance))
 	instance.connect("judgementEnabled", Callable(self, "_on_judge_enabled"))
 	return instance

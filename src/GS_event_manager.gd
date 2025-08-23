@@ -82,6 +82,7 @@ func _change_bpm(bpm):
 
 func _add_rail_to_GS(root : Node2D):
     rail_manager[root.name] = root
+    print("add rail to collection")
 
 func _remove_rail_from_GS(rail_name : String):
     rail_manager[rail_name] = null    

@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cayuuknd46xhm"]
 
 [ext_resource type="Script" uid="uid://2qrdok6nm5it" path="res://src/linear_rail.gd" id="1_65ijj"]
-[ext_resource type="Texture2D" uid="uid://b5tqfyks1krm7" path="res://assets/playground/play_line.png" id="1_cmhid"]
+[ext_resource type="Texture2D" uid="uid://ervd14j64go4" path="res://assets/贴图/判定线.png" id="1_cmhid"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_65ijj"]
 distance = 100.0

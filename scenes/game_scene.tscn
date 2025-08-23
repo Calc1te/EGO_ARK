@@ -1,10 +1,16 @@
-[gd_scene load_steps=6 format=3 uid="uid://dg1ns8vsrbs2o"]
+[gd_scene load_steps=9 format=3 uid="uid://dg1ns8vsrbs2o"]
 
 [ext_resource type="Script" uid="uid://cm1nytwgkjjw7" path="res://src/game_scene.gd" id="1_h0sqa"]
 [ext_resource type="Script" path="res://src/sound.gd" id="5_fasfa"]
+[ext_resource type="PackedScene" uid="uid://8kf6fmhqpl7" path="res://scenes/static_rail_center.tscn" id="5_kk2rg"]
 [ext_resource type="Script" uid="uid://dmcd4lid30a70" path="res://src/linear_rail_container.gd" id="5_y3j0m"]
+[ext_resource type="PackedScene" uid="uid://cayuuknd46xhm" path="res://scenes/linear_rail.tscn" id="6_b5spy"]
 [ext_resource type="PackedScene" uid="uid://c2sfx38jn573p" path="res://scenes/sphere_rail_center.tscn" id="6_kk2rg"]
 [ext_resource type="Script" path="res://src/chart_loader.gd" id="6_rurhu"]
+
+[sub_resource type="GDScript" id="GDScript_rurhu"]
+script/source = "extends Button
+"
 
 [node name="gameScene" type="Node2D"]
 script = ExtResource("1_h0sqa")
@@ -20,18 +26,33 @@ offset_left = 44.0
 offset_top = 35.0
 offset_right = 183.0
 offset_bottom = 75.0
+metadata/_edit_use_anchors_ = true
 
 [node name="combo" type="RichTextLabel" parent="."]
 offset_right = 40.0
 offset_bottom = 40.0
+metadata/_edit_use_anchors_ = true
 
-[node name="sphereRailsContainer" type="Node2D" parent="."]
-position = Vector2(576, 648)
+[node name="SphereRailContainer" type="Node2D" parent="."]
+position = Vector2(576, 320)
 
-[node name="SphereRailCenter" parent="sphereRailsContainer" instance=ExtResource("6_kk2rg")]
-position = Vector2(224, 24)
+[node name="SphereRailCenter" parent="SphereRailContainer" instance=ExtResource("6_kk2rg")]
+
+[node name="staticRailCenter" parent="SphereRailContainer" instance=ExtResource("5_kk2rg")]
+z_index = 1
 
 [node name="LinearRailContainer" type="Node2D" parent="."]
+position = Vector2(144, 56)
 script = ExtResource("5_y3j0m")
+linear_rail_scene = ExtResource("6_b5spy")
+
+[node name="Button" type="Button" parent="."]
+offset_left = 104.0
+offset_top = 136.0
+offset_right = 208.0
+offset_bottom = 168.0
+text = "call"
+script = SubResource("GDScript_rurhu")
 
 [connection signal="chart_loaded" from="ChartLoader" to="." method="_on_chart_loaded"]
+[connection signal="button_down" from="Button" to="." method="_on_button_button_down"]

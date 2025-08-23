@@ -6,7 +6,10 @@ class_name gameScene
 
 @onready var soundPlayer : AudioStreamPlayer = $AudioStreamPlayer
 @onready var chartLoader : ChartLoader = $ChartLoader
-@onready var lineRailContainer : linearRailContainer = $LinearRailContainer
+
+# fixme: 
+@onready var lineRailContainer : LinearRailContainer = $LinearRailContainer
+@onready var sphereRailContainer : Node2D = $SphereRailContainer
 
 @onready var comboDisplay : RichTextLabel = $combo
 @onready var scoreDisplay : RichTextLabel = $score
@@ -19,6 +22,9 @@ class_name gameScene
 @export var isTestNoteSpawn : int = 0
 @export var currentMusic : String
 @export var isDemoPlay : bool
+
+###### debug
+@onready var new_rail_button : Button = $Button
 
 ###### Game-Related Constants ######
 const FRAME_RATE = 120 # Change this might break the whole judgement system
@@ -37,7 +43,6 @@ var entry # the fuck is entry
 var is_game_started : bool = false
 var is_game_ended : bool = false
 
-# 计算noteSpawnFrame的误差可能导致打击帧数前后偏移一帧
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -47,7 +52,10 @@ func _ready() -> void:
 	frame = 0
 	soundPlayer.stream = load(currentMusic)
 	# fixme: thi should be changed since the logic is different now
-	note_spawner = $staticRailsContainer/staticRailCenter
+	note_spawner = $"SphereRailContainer/staticRailCenter"	
+	# if u write 
+	# note_spawner = $SphereRailContainer/SphereRailCenter/staticRailCenter
+	# instead, then this shi won't work somehow
 	note_spawner.spawnHeight = spawnHeight
 	note_handler.initialize(note_spawner)
 	note_handler.connect("gameplay_BPM_change",note_handler._on_BPM_change)
@@ -179,3 +187,9 @@ func _compute_travel_time_ms() -> float:
 
 func _sort_by_spawn_time(a, b) -> bool:
 	return a["spawn_time"] < b["spawn_time"]
+
+
+
+
+func _on_button_button_down() -> void:
+	lineRailContainer.on_linear_rail_init("test", Vector2(128,128), 0)

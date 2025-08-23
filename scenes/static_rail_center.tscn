@@ -15,6 +15,7 @@ script = ExtResource("1_3rykd")
 noteScene = ExtResource("2_xv747")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = 10
 position = Vector2(-7.10543e-15, -152)
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("3_3rykd")
