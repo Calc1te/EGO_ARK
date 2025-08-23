@@ -35,8 +35,11 @@ signal judgementEnabled(node : Node2D)
 signal noteDestroyed(hitOffset : int, posY : int, holdDuration : int)
 
 @export var thisNoteType : NoteType = NoteType.HoldStart
+@export var overrideTouchControl : bool = true
+
 @onready var spriteNode : AnimatedSprite2D = $Sprite2D
 @onready var holdBodyContainer : Node2D = $holdBodyContainer
+
 @export var isAutoPlay := false
 var thisNoteRoot : Node2D =  null
 # ────────────────────────── 生命周期 ──────────────────────────
@@ -52,8 +55,9 @@ func _ready() -> void:
 func _physics_process(_delta: float) -> void:
 	_move_note(_delta)
 	_check_elimination()
-	_check_input()          
-	_update_hold_duration()
+	if isActivate:
+		_check_input()          
+		_update_hold_duration()
 
 # ────────────────────────── 内部逻辑 ──────────────────────────
 func _setup_texture() -> void:
@@ -88,7 +92,8 @@ func _on_area_entered(area : Area2D) -> void:
 		inJudgement = true
 		emit_signal("judgementEnabled", self)
 
-	
+
+
 
 func _check_input() -> void:
 
@@ -101,9 +106,9 @@ func _check_input() -> void:
 				_tap_hit()
 		NoteType.HoldStart:
 			if !isHoldActive and Input.is_action_just_pressed("hit_center_track"):
-				_start_hold()
+				_hold_start()
 			elif isHoldActive and Input.is_action_just_released("hit_center_track"):
-				_end_hold()
+				_hold_end()
 		NoteType.Slide:
 			if Input.is_action_just_pressed("hit_center_track")||Input.is_action_pressed("hit_center_track"):
 				_slide_hit()
@@ -125,7 +130,9 @@ func _draw_hold_bodies() -> void:
 		holdBodyContainer.add_child(holdBodyClone)
 		yOffset -= 1
 
-func _start_hold() -> void:
+func _hold_start() -> void:
+	if isHoldActive: return
+
 	isHoldActive     = true
 	_hold_start_time = Time.get_ticks_msec()
 	hitTime          = _hold_start_time   # 记录首击时刻
@@ -135,9 +142,9 @@ func _update_hold_duration() -> void:
 	if isHoldActive:
 		holdDuration = Time.get_ticks_msec() - _hold_start_time
 		if holdDuration >= (durationTime+50) or early_release:
-			_end_hold()
+			_hold_end()
 
-func _end_hold() -> void:
+func _hold_end() -> void:
 	isHoldActive = false
 	var offset := hitTime - inTime  # 命中偏差仍用首击时刻计算
 	# print('ref:',offset,',',abs(holdDuration-durationTime))

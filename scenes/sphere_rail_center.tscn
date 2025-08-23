@@ -1,13 +1,25 @@
-[gd_scene load_steps=2 format=3 uid="uid://c2sfx38jn573p"]
+[gd_scene load_steps=4 format=3 uid="uid://c2sfx38jn573p"]
+
+[ext_resource type="Script" uid="uid://dc0m6ldnt82cl" path="res://src/sphere_rail_center.gd" id="1_sbaa2"]
+[ext_resource type="Texture2D" uid="uid://cwg2cb15yeakg" path="res://assets/贴图/轮盘.png" id="2_sbaa2"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_o1gow"]
 radius = 287.111
 
 [node name="SphereRailCenter" type="Node2D"]
+script = ExtResource("1_sbaa2")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+light_mask = 2
+visibility_layer = 2
+position = Vector2(0, 1)
+scale = Vector2(0.34, 0.34)
+texture = ExtResource("2_sbaa2")
 
 [node name="Area2D" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+light_mask = 2
+visibility_layer = 2
 shape = SubResource("CircleShape2D_o1gow")
+debug_color = Color(0.51503, 0.420849, 1, 0.42)

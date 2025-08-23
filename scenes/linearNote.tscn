@@ -1,0 +1,73 @@
+[gd_scene load_steps=8 format=3 uid="uid://blg1muhe3cxmc"]
+
+[ext_resource type="Texture2D" uid="uid://r7een0ef3c6d" path="res://assets/贴图/打击特效.png" id="1_kc50x"]
+[ext_resource type="Texture2D" uid="uid://ddwqslnd65u7q" path="res://assets/贴图/红1.png" id="2_qk4uu"]
+[ext_resource type="Texture2D" uid="uid://e6sgoogv57f4" path="res://assets/贴图/长1.png" id="3_3om0p"]
+[ext_resource type="Texture2D" uid="uid://bkebgiwjhincb" path="res://assets/贴图/黄1.png" id="4_2xre4"]
+[ext_resource type="Texture2D" uid="uid://bdiyw0ea0t1fw" path="res://assets/贴图/蓝1.png" id="5_f3g83"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_uoryq"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_kc50x")
+}],
+"loop": true,
+"name": &"eliminate",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_qk4uu")
+}],
+"loop": true,
+"name": &"flick",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_3om0p")
+}],
+"loop": true,
+"name": &"holdStart",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_2xre4")
+}],
+"loop": true,
+"name": &"slide",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_f3g83")
+}],
+"loop": true,
+"name": &"tap",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_0e2r4"]
+radius = 4.0
+height = 8.0
+
+[node name="LinearNote" type="Node2D"]
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(-1, -10)
+scale = Vector2(0.1, 0.1)
+sprite_frames = SubResource("SpriteFrames_uoryq")
+animation = &"holdStart"
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CapsuleShape2D_0e2r4")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="holdBodyContainer" type="Node2D" parent="."]
