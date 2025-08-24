@@ -1,5 +1,5 @@
 extends Node2D
-class_name noteRoot
+class_name SphereRailCenter
 
 @export var autoPlay: bool = false
 @export var noteScene : PackedScene
@@ -7,7 +7,6 @@ class_name noteRoot
 @onready var touchJudgementArea : TouchScreenButton = $TouchScreenButton
 
 var active_notes = []
-# 旋转直接修改当前轨道的rotation 弧度制
 var spawnHeight : int
 var horizontalOffset : float # pixels
 const SPEED_COEFFICIENT : int = 200
@@ -18,11 +17,11 @@ func _ready() -> void:
 
 
 
-func spawnNote(note_type : StatNote.NoteType, speed : float, noteID : int, inTime : int, holdDuration : int):
+func spawnNote(note_type : StatNote.NoteType, speed : float, noteID : int, inTime : int, holdDuration : int, angle : float):
 	speed = SPEED_COEFFICIENT * speed
 	var instance = noteScene.instantiate()
-	instance.position.y = -spawnHeight
-	instance.position.x = 0
+	instance.position.y = (-spawnHeight) * cos(angle)
+	instance.position.x = spawnHeight * sin(angle)
 	instance.thisNoteType = note_type
 	instance.speed = speed
 	instance.noteID = noteID

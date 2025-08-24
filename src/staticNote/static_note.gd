@@ -8,11 +8,7 @@ const MISS := 65535
 const ELIMINATION_START := 575
 const ELIMINATION_END := 700
 
-const TEXTURE_TAP        := "res://temp_assets/tap.png"
-const TEXTURE_HOLD       := "res://temp_assets/hold Background Removed.png"
-const TEXTURE_FLICK      := "res://temp_assets/lineRailRoot Background Removed.png"
-const TEXTURE_HOLD_HEAD  := "res://temp_assets/hold Background Removed.png"
-const TEXTURE_HOLD_BODY  := "res://temp_assets/hold_BODY.png"
+const TEXTURE_HOLD_BODY  := "res://assets/贴图/长note拆分1.png"
 
 
 # ────────────────────────── 状态量 ──────────────────────────

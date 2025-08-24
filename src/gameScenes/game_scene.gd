@@ -1,7 +1,7 @@
 extends Node2D
 class_name gameScene
 
-@onready var note_spawner : noteRoot
+@onready var note_spawner : NoteRoot
 @onready var noteID : int = 0
 
 @onready var soundPlayer : AudioStreamPlayer = $AudioStreamPlayer
