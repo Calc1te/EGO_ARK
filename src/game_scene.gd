@@ -21,7 +21,8 @@ class_name gameScene
 @export var spawnHeight : int = 800
 @export var isTestNoteSpawn : int = 0
 @export var currentMusic : String
-@export var isDemoPlay : bool
+@export var isAutoPlay : bool
+@export var isCalibration : bool
 
 ###### debug
 @onready var new_rail_button : Button = $Button
@@ -48,7 +49,7 @@ var is_game_ended : bool = false
 func _ready() -> void:
 	chartLoader.connect("chart_loaded", _on_chart_loaded)
 	chartLoader.load_chart("res://charts/dummy_chart.yaml")
-	print("current offset: ", judgement.referenceOffset)
+	print("current offset: ", judgement.referenceOffset_static)
 	frame = 0
 	soundPlayer.stream = load(currentMusic)
 	# fixme: thi should be changed since the logic is different now
@@ -57,69 +58,32 @@ func _ready() -> void:
 	# note_spawner = $SphereRailContainer/SphereRailCenter/staticRailCenter
 	# instead, then this shi won't work somehow
 	note_spawner.spawnHeight = spawnHeight
-	note_handler.initialize(note_spawner)
+	judgement.updateSpeed(spawnHeight)
+	
+	note_handler.initialize(note_spawner, judgement)
 	note_handler.connect("gameplay_BPM_change",note_handler._on_BPM_change)
-	judgement.referenceOffset = spawnHeight*10/(judgement.globalSpeed*2)
-	note_handler.connect("pass_destroy_to_GS",_on_receive_hit)
+
 	event_handler.connect("linear_rail_init", lineRailContainer.on_linear_rail_init)
 	event_handler.connect("linear_rail_destroy", lineRailContainer.on_linear_rail_destroy)
 	event_handler.connect("rail_registered", lineRailContainer.on_linear_rail_init)
 	event_handler.connect("lrail_destroyed", lineRailContainer.on_linear_rail_destroy)
+	
+	if isCalibration:
+		note_handler.connect("calibration",drawDemoHit)
 	# Start the game
 	Global.state = Global.StateMachine.playing
 	
 	
 
 func _physics_process(_delta: float) -> void:
-	if Input.is_action_just_pressed("spawn_note"):
-		note_handler.spawnNote(StatNote.NoteType.Tap, judgement.globalSpeed, frame, -1) # this is a test function
 	frame+=1
 	var now_rel := Time.get_ticks_msec() - song_start_time
 	while next_note_idx < upcoming_notes.size() && upcoming_notes[next_note_idx].spawn_time <= now_rel:
 		entry = upcoming_notes[next_note_idx]
-		_spawn_from_data(entry.data)
+		note_handler._spawn_from_data(entry.data)
 		next_note_idx += 1
 	note_handler.setNoteEnable()
 	event_handler._process_event(_delta)
-
-		
-
-func _spawn_from_data(note_data : Array):
-	var time = note_data[0]
-	var note_type
-	match int(note_data[1]):
-		11:
-			note_type = StatNote.NoteType.Tap
-		12:
-			note_type = StatNote.NoteType.HoldStart
-		13:
-			note_type = StatNote.NoteType.Flick
-		14:
-			note_type = StatNote.NoteType.Slide
-		
-	var spd = note_data[2]
-	var angle = note_data[3]
-	var parameter = note_data[4]
-	
-	if note_data[1] < 20:
-		var note = note_handler.note_spawner.spawnNote(note_type, spd*judgement.globalSpeed, next_note_idx, time, parameter if parameter else -1)
-		note.connect("noteDestroyed",note_handler._on_note_destroyed)
-		note_handler.noteArray.append(note)
-
-	else: pass # TODO: add sphere note
-
-
-
-# why there's so many blank line
-
-
-func _on_receive_hit(acc, posY, holdDuration):
-	judgement.calculate_acc(acc, holdDuration)
-	if isDemoPlay:
-		drawDemoHit(posY)
-	
-	# Check if game should end
-	check_game_end()
 
 func check_game_end():
 	if is_game_started and not is_game_ended:
@@ -130,16 +94,8 @@ func check_game_end():
 			print("Game ended!")
 			var acc : float = judgement.get_accuracy()
 			# TODO : move to clear screen
-
-
-
-
-func updateSpeed():
-	judgement.referenceOffset = spawnHeight*10/(judgement.globalSpeed*2)
-	print("speed Updated, new reference offset: ",judgement.referenceOffset)
 	
-	
-func drawDemoHit(pos: int):
+func drawDemoHit(_acc,posY,_holdDuration):
 	
 	var viewport_width = get_viewport().get_visible_rect().size.x
 	
@@ -147,7 +103,7 @@ func drawDemoHit(pos: int):
 	var line_width = 2.0
 	
 	# 绘制一条从左侧到右侧的直线，位置在 posY
-	draw_line(Vector2(0, pos), Vector2(viewport_width, pos), line_color, line_width)
+	draw_line(Vector2(0, posY), Vector2(viewport_width, posY), line_color, line_width)
 
 
 func update_displays():
