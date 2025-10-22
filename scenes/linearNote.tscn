@@ -1,10 +1,10 @@
 [gd_scene load_steps=8 format=3 uid="uid://blg1muhe3cxmc"]
 
-[ext_resource type="Texture2D" uid="uid://r7een0ef3c6d" path="res://assets/贴图/打击特效.png" id="1_kc50x"]
-[ext_resource type="Texture2D" uid="uid://ddwqslnd65u7q" path="res://assets/贴图/红1.png" id="2_qk4uu"]
-[ext_resource type="Texture2D" uid="uid://e6sgoogv57f4" path="res://assets/贴图/长1.png" id="3_3om0p"]
-[ext_resource type="Texture2D" uid="uid://bkebgiwjhincb" path="res://assets/贴图/黄1.png" id="4_2xre4"]
-[ext_resource type="Texture2D" uid="uid://bdiyw0ea0t1fw" path="res://assets/贴图/蓝1.png" id="5_f3g83"]
+[ext_resource type="Texture2D" uid="uid://4phu1ygr6ntd" path="res://assets/animations/hit_frame1.png" id="1_kc50x"]
+[ext_resource type="Texture2D" uid="uid://cflq5keuu42l5" path="res://assets/notes/line_flick.png" id="2_qk4uu"]
+[ext_resource type="Texture2D" uid="uid://cm6ktdhy621ti" path="res://assets/notes/line_hold.png" id="3_3om0p"]
+[ext_resource type="Texture2D" uid="uid://cufu55qnlsmqc" path="res://assets/notes/line_slide.png" id="4_2xre4"]
+[ext_resource type="Texture2D" uid="uid://cy6xfgxyvbj2g" path="res://assets/notes/line_tap.png" id="5_f3g83"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_uoryq"]
 animations = [{

@@ -67,6 +67,8 @@ func _ready() -> void:
 	event_handler.connect("linear_rail_destroy", lineRailContainer.on_linear_rail_destroy)
 	event_handler.connect("rail_registered", lineRailContainer.on_linear_rail_init)
 	event_handler.connect("lrail_destroyed", lineRailContainer.on_linear_rail_destroy)
+
+	soundPlayer.play()
 	
 	if isCalibration:
 		note_handler.connect("calibration",drawDemoHit)
@@ -151,3 +153,8 @@ func _sort_by_spawn_time(a, b) -> bool:
 
 func _on_button_button_down() -> void:
 	lineRailContainer.on_linear_rail_init("test", Vector2(128,128), 0)
+
+
+func soundPlayback() -> float:
+	var time = soundPlayer.get_playback_position() + AudioServer.get_time_since_last_mix() - AudioServer.get_output_latency()
+	return time
