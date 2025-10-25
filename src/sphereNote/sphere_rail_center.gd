@@ -12,8 +12,7 @@ var horizontalOffset : float # pixels
 const SPEED_COEFFICIENT : int = 200
 
 func _ready() -> void:
-	touchJudgementArea.connect("pressed", _touch_pressed)
-	touchJudgementArea.connect("released", _touch_released)
+	pass
 
 
 

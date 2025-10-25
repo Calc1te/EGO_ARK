@@ -6,7 +6,7 @@ class_name gameScene
 
 @onready var soundPlayer : AudioStreamPlayer = $AudioStreamPlayer
 @onready var chartLoader : ChartLoader = $ChartLoader
-
+@onready var frameTranslator : ChartFrameTranslator = $ChartFrameTranslator
 # fixme: 
 @onready var lineRailContainer : LinearRailContainer = $LinearRailContainer
 @onready var sphereRailContainer : Node2D = $SphereRailContainer
@@ -116,37 +116,9 @@ func update_displays():
 
 
 func _on_chart_loaded(data: Dictionary, events: Array, notes: Array) -> void:
-	# TODO implement event array
 	print("chart_loaded")
-	#currentMusic = data["AudioFilePath"]
-	note_handler.ref_BPM = float(data["BPM"])
-	note_handler.current_BPM = float(data["BPM"])
-	event_handler._parse_raw_events(events)
-	_build_note_array(notes)
-	judgement.score_init()
+	frameTranslator.initialize(data, notes, events, soundPlayer)
 
-
-
-func _build_note_array(notes):
-	var travel_ms = _compute_travel_time_ms()
-	
-	for note_data in notes:
-		var hit_time = note_data[0]
-		var spawn_time = hit_time - travel_ms/note_data[2]
-		upcoming_notes.append({
-			"spawn_time": int(spawn_time),
-			"data": note_data
-		})
-	upcoming_notes.sort_custom(_sort_by_spawn_time)
-	song_start_time = Time.get_ticks_msec()
-	judgement.total_notes = notes.size()
-
-
-func _compute_travel_time_ms() -> float:
-	return spawnHeight / (judgement.globalSpeed * SPEED_COEFFICIENT) * 1000.0
-
-func _sort_by_spawn_time(a, b) -> bool:
-	return a["spawn_time"] < b["spawn_time"]
 
 
 

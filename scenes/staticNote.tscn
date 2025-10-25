@@ -1,16 +1,15 @@
-[gd_scene load_steps=8 format=3 uid="uid://1qob67o7hcvv"]
+[gd_scene load_steps=7 format=3 uid="uid://1qob67o7hcvv"]
 
 [ext_resource type="Script" uid="uid://c7ijie7k3ke8o" path="res://src/staticNote/static_note.gd" id="1_k5fuw"]
-[ext_resource type="Texture2D" uid="uid://phedcxeh4qf8" path="res://assets/贴图/蓝3_.png" id="2_fe54y"]
-[ext_resource type="Texture2D" uid="uid://ceo3vyg3f2whj" path="res://assets/贴图/长note拆分2.png" id="2_i2ank"]
-[ext_resource type="Texture2D" uid="uid://bpbkcdpjdm35d" path="res://assets/贴图/黄3.png" id="3_upqyn"]
-[ext_resource type="Texture2D" uid="uid://phedcxeh4qf8" path="res://assets/贴图/蓝3_.png" id="4_fe54y"]
+[ext_resource type="Texture2D" uid="uid://sq7e0ud5xm0o" path="res://assets/holdhead.png" id="2_i2ank"]
+[ext_resource type="Texture2D" uid="uid://cufu55qnlsmqc" path="res://assets/notes/line_slide.png" id="3_upqyn"]
+[ext_resource type="Texture2D" uid="uid://cy6xfgxyvbj2g" path="res://assets/notes/line_tap.png" id="4_fe54y"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_lku08"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_fe54y")
+"texture": ExtResource("4_fe54y")
 }],
 "loop": true,
 "name": &"eliminate",
@@ -18,7 +17,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_fe54y")
+"texture": ExtResource("4_fe54y")
 }],
 "loop": true,
 "name": &"flick",

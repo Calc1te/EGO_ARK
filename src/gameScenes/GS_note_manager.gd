@@ -49,7 +49,7 @@ func _on_note_destroyed(acc, posY, holdDuration):
 
 func _spawn_from_data(note_data : Array):
 	var time = note_data[0]
-	var note_type = note_data[1]%10
+	var note_type = int(note_data[1])%10
 	var spd = note_data[2]
 	var angle = note_data[3]
 	var parameter = note_data[4]
